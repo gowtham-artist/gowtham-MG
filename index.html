@@ -588,21 +588,42 @@
       font-size: 0.9rem;
     }
 
+    .birthday-prompt {
+      margin: 0;
+      color: rgba(255, 215, 236, 0.8);
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.08rem;
+      text-align: center;
+    }
+
+    .birthday-date-wrap {
+      position: relative;
+    }
+
     .birthday-form input {
       width: 100%;
-      min-height: 48px;
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 12px;
-      padding: 10px 12px;
-      background: rgba(255,255,255,0.08);
+      min-height: 54px;
+      border: 1px solid rgba(255, 182, 215, 0.42);
+      border-radius: 16px;
+      padding: 12px 14px;
+      background: linear-gradient(135deg, rgba(255, 208, 229, 0.14), rgba(255,255,255,0.06));
       color: #fff8fc;
       color-scheme: dark;
       font: 1rem "Playfair Display", serif;
+      box-shadow: inset 0 1px rgba(255,255,255,0.08), 0 8px 20px rgba(0,0,0,0.12);
+      accent-color: #ff8fbd;
+      touch-action: manipulation;
+    }
+
+    .birthday-form input::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+      filter: invert(82%) sepia(23%) saturate(846%) hue-rotate(286deg) brightness(103%);
     }
 
     .birthday-form input:focus-visible {
-      outline: 2px solid #ff9bc6;
+      outline: 2px solid #ffd1e5;
       outline-offset: 2px;
+      box-shadow: 0 0 0 5px rgba(255, 143, 189, 0.14);
     }
 
     .birthday-error {
@@ -967,7 +988,7 @@
 
       <div class="field">
         <label for="username">Username</label>
-        <input id="username" name="username" type="text" placeholder="Enter your username" required />
+        <input id="username" name="username" type="text" placeholder="Enter your username" autocapitalize="sentences" required />
       </div>
 
       <div class="field">
@@ -1023,8 +1044,12 @@
         <h2 class="stage-title">One Last Little Secret</h2>
         <p class="stage-description">Enter your date of birth to open your love locker.</p>
         <form id="birthdayForm" class="birthday-form">
-          <label for="birthdayInput">Your date of birth</label>
-          <input id="birthdayInput" name="birthday" type="date" autocomplete="bday" required aria-describedby="birthdayError" />
+          <p class="birthday-prompt">Choose the day my heart remembers ♡</p>
+          <label for="birthdayInput">Your special date</label>
+          <div class="birthday-date-wrap">
+            <input id="birthdayInput" name="birthday" type="date" min="1900-01-01" autocomplete="bday" required aria-describedby="birthdayHint birthdayError" />
+          </div>
+          <p id="birthdayHint" class="birthday-prompt">Only past years are available</p>
           <p id="birthdayError" class="birthday-error" role="alert" hidden>That date doesn't match. Please try again.</p>
           <button class="stage-action" type="submit">Continue to locker</button>
         </form>
@@ -1103,6 +1128,8 @@ With all my heart 💖</div>
     let hapticInterval;
     let isHoldingHeart = false;
     const holdDuration = 3000;
+    const lastPastYear = new Date().getFullYear() - 1;
+    birthdayInput.max = `${lastPastYear}-12-31`;
 
     function stopHeartVibration() {
       if (hapticInterval) {
@@ -1147,8 +1174,18 @@ With all my heart 💖</div>
       }
     }
 
+    usernameInput.addEventListener('input', function () {
+      const value = usernameInput.value;
+      const firstCharacter = value.charAt(0).toUpperCase();
+      if (value && value.charAt(0) !== firstCharacter) {
+        const cursor = usernameInput.selectionStart;
+        usernameInput.value = firstCharacter + value.slice(1);
+        if (cursor !== null) usernameInput.setSelectionRange(cursor, cursor);
+      }
+    });
+
     function startJourney() {
-      if (usernameInput.value !== 'loveyou' || passwordInput.value !== 'bubu') {
+      if (usernameInput.value !== 'Loveyou' || passwordInput.value !== 'bubu') {
         loginError.hidden = false;
         return;
       }
