@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Our Beautiful Story</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Great+Vibes&family=Parisienne&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-1: #120912;
+      --bg-2: #2a0d1f;
+      --bg-3: #fdedf5;
+      --card: rgba(255,255,255,0.08);
+      --card-strong: rgba(255,255,255,0.12);
+      --rose: #ff5ca8;
+      --pink: #ff7fb7;
+      --peach: #ffd7ec;
+      --gold: #f6d58a;
+      --soft: #fff6fb;
+      --text: #fff1f7;
+      --shadow: rgba(255, 86, 154, 0.35);
+      --deep: rgba(0, 0, 0, 0.22);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+      font-family: "Playfair Display", serif;
+      background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 35%, #3b1627 100%);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .screen {
+      display: none;
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
+      position: relative;
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior-y: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .screen.active {
+      display: flex;
+      align-items: safe center;
+      justify-content: safe center;
+    }
+
+    .login-screen {
+      background:
+        radial-gradient(circle at top, rgba(255,180,210,0.3), transparent 22%),
+        linear-gradient(140deg, #160d18 0%, #2a0d1f 38%, #3a1425 100%);
+      padding: 32px 20px;
+    }
+
+    .login-card {
+      width: min(480px, 90vw);
+      padding: 28px 28px 24px;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 28px;
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.35), 0 0 30px rgba(255, 99, 176, 0.18);
+    }
+
+    .subhead {
+      text-align: center;
+      color: var(--soft);
+      font-family: "Comic Sans MS", "Comic Sans", cursive;
+      font-size: clamp(1.15rem, 3.2vw, 1.55rem);
+      line-height: 1.25;
+      margin: 0 0 22px;
+      opacity: 0;
+      transform: translateY(14px);
+      animation: riseIn 1.2s ease 0.55s forwards;
+    }
+
+    .subhead .tagline {
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .subhead .heart-mark {
+      display: inline-block;
+      color: #000000;
+      text-shadow: 0 0 10px rgba(255,255,255,0.35);
+      margin-left: 5px;
+      font-family: sans-serif;
+      font-size: 0.8em;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .field label {
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255, 244, 249, 0.8);
+    }
+
+    .field input {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 14px 16px;
+      font-size: 1rem;
+      outline: none;
+      transition: 0.25s ease;
+    }
+
+    .field input::placeholder {
+      color: rgba(255,255,255,0.4);
+    }
+
+    .field input:focus {
+      border-color: rgba(255, 124, 182, 0.9);
+      box-shadow: 0 0 0 4px rgba(255, 124, 182, 0.12);
+      background: rgba(255,255,255,0.07);
+    }
+
+    .submit-btn {
+      width: 100%;
+      border: none;
+      border-radius: 999px;
+      padding: 16px 20px;
+      cursor: pointer;
+      font-size: 1rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #59162a;
+      background: linear-gradient(135deg, #ffdbe9 0%, #ffb0d0 35%, #ffa2c9 100%);
+      box-shadow: 0 12px 28px rgba(255, 145, 194, 0.4);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 18px 35px rgba(255, 145, 194, 0.5);
+    }
+
+    .login-error {
+      margin-top: 14px;
+      color: #ffd1df;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .story-screen {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background:
+        linear-gradient(180deg, rgba(255, 213, 231, 0.16), rgba(255,255,255,0.03)),
+        radial-gradient(circle at center, rgba(255, 152, 196, 0.18), transparent 30%),
+        linear-gradient(160deg, #1a0d15 0%, #2a0d1f 42%, #311822 100%);
+      padding: 32px 20px;
+    }
+
+    .story-screen .title {
+      font-family: "Great Vibes", cursive;
+      font-size: clamp(3rem, 11vw, 7rem);
+      text-align: center;
+      color: #ffe3ef;
+      margin: 0 0 18px;
+      text-shadow: 0 0 18px rgba(255, 170, 209, 0.25);
+      opacity: 0;
+      animation: riseIn 1s ease 0.1s forwards;
+    }
+
+    .story-screen .subtitle-2 {
+      text-align: center;
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(1.5rem, 3vw, 2.4rem);
+      line-height: 1.4;
+      max-width: 740px;
+      color: rgba(255, 244, 249, 0.92);
+      margin-bottom: 36px;
+      opacity: 0;
+      animation: riseIn 1s ease 0.5s forwards;
+    }
+
+    .story-screen .mini-text {
+      text-align: center;
+      font-family: "Parisienne", cursive;
+      color: #ffd7eb;
+      font-size: clamp(1.5rem, 4vw, 2.4rem);
+      opacity: 0;
+      animation: riseIn 1s ease 1s forwards;
+    }
+
+    .story-screen .heart-game-wrap {
+      width: min(600px, 92vw);
+      text-align: center;
+      position: relative;
+      margin-top: 18px;
+      opacity: 0;
+      animation: riseIn 1s ease 1.25s forwards;
+    }
+
+    .heart-game-wrap h3 {
+      margin: 0 0 10px;
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #ffeaf4;
+    }
+
+    .meter-box {
+      margin: 18px auto 22px;
+      width: min(520px, 70vw);
+      height: 18px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.07);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .meter-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #ff70b4, #ffd1ea, #ff8bc0);
+      box-shadow: 0 0 18px rgba(255, 122, 186, 0.5);
+      transition: width 0.3s ease;
+    }
+
+    .heart-button {
+      display: inline-grid;
+      min-width: 88px;
+      min-height: 88px;
+      place-items: center;
+      position: relative;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: clamp(4rem, 10vw, 8rem);
+      color: #ff6da8;
+      text-shadow: 0 0 18px rgba(255, 105, 171, 0.5);
+      animation: floatHeart 2.2s ease-in-out infinite;
+      transition: transform 0.2s ease;
+      user-select: none;
+      touch-action: manipulation;
+    }
+
+    .heart-button:hover {
+      transform: scale(1.06);
+    }
+
+    .heart-button:active {
+      transform: scale(0.96);
+    }
+
+    .percentage {
+      margin-top: 12px;
+      font-size: clamp(1.5rem, 3vw, 2.5rem);
+      color: #ffdfe9;
+      font-family: "Cormorant Garamond", serif;
+      letter-spacing: 0.08em;
+    }
+
+    .floating-butterflies {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .floating-butterflies span {
+      position: absolute;
+      font-size: 1.7rem;
+      opacity: 0;
+      mix-blend-mode: screen;
+      text-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
+      will-change: transform, opacity;
+      animation: flutterUp 3s ease-in-out forwards;
+    }
+
+    .floating-butterflies .flying-black-heart {
+      font-size: 1.45rem;
+      mix-blend-mode: normal;
+      filter: drop-shadow(0 0 7px rgba(0, 0, 0, 0.8));
+    }
+
+    .floating-butterflies .flying-sky-heart {
+      font-size: 1.5rem;
+      filter: drop-shadow(0 0 8px rgba(135, 206, 250, 0.85));
+    }
+
+    .final-screen {
+      background:
+        linear-gradient(160deg, #100b11 0%, #1c0d19 35%, #2f1629 100%);
+      padding: 28px 20px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .final-screen.active {
+      display: flex;
+    }
+
+    .message-screen {
+      flex-direction: column;
+      padding: 24px 16px;
+      background:
+        radial-gradient(circle at top, rgba(255, 116, 174, 0.16), transparent 35%),
+        linear-gradient(160deg, #100b11 0%, #1c0d19 45%, #2f1629 100%);
+    }
+
+    .message-screen::before {
+      content: "";
+      position: absolute;
+      inset: -35%;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse at 50% 42%, rgba(255, 116, 174, 0.18), transparent 34%),
+        radial-gradient(ellipse at 18% 82%, rgba(133, 104, 222, 0.11), transparent 32%);
+      animation: messageGlow 8s ease-in-out infinite alternate;
+    }
+
+    .letter-shell {
+      width: min(980px, 94vw);
+      max-width: 980px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 28px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.28);
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      padding: 26px 18px 18px;
+    }
+
+    .message-panel {
+      width: min(820px, 92vw);
+      background: linear-gradient(180deg, rgba(255, 153, 190, 0.16), rgba(255,255,255,0.04));
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 22px;
+    }
+
+    .message-card {
+      width: min(360px, 75vw);
+      aspect-ratio: 3 / 4;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.02);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 12px;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 0 20px rgba(255,255,255,0.02);
+      color: inherit;
+      font: inherit;
+      touch-action: none;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .message-panel[hidden],
+    .stage-screen[hidden] {
+      display: none;
+    }
+
+    .message-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,212,231,0.12), transparent 45%, rgba(255,255,255,0.04));
+      pointer-events: none;
+    }
+
+    .message-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 26px rgba(255, 145, 194, 0.12);
+    }
+
+    .poster-photo {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      min-height: 300px;
+      object-fit: cover;
+      border-radius: 12px;
+      display: block;
+      filter: saturate(0.9) contrast(1.05);
+      pointer-events: none;
+      -webkit-touch-callout: none;
+      -webkit-user-drag: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .message-card.is-heartbeating .poster-photo {
+      animation: photoHeartbeat 1s ease-in-out infinite;
+      transform-origin: center;
+    }
+
+    @keyframes photoHeartbeat {
+      0%, 100% {
+        transform: scale(1);
+        filter: saturate(0.9) contrast(1.05) drop-shadow(0 0 0 rgba(255, 91, 159, 0));
+      }
+      18% {
+        transform: scale(1.035);
+        filter: saturate(1.12) contrast(1.07) drop-shadow(0 0 13px rgba(255, 91, 159, 0.62));
+      }
+      34% {
+        transform: scale(1);
+      }
+      52% {
+        transform: scale(1.02);
+        filter: saturate(1.05) contrast(1.05) drop-shadow(0 0 8px rgba(255, 91, 159, 0.38));
+      }
+    }
+
+    .open-text {
+      position: absolute;
+      left: 50%;
+      top: 18px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      width: min(320px, calc(100% - 28px));
+      padding: 13px 15px;
+      transform: translateX(-50%);
+      z-index: 3;
+      color: #fff8fc;
+      text-align: left;
+      background: rgba(38, 22, 34, 0.86);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 21px;
+      backdrop-filter: blur(22px) saturate(1.4);
+      -webkit-backdrop-filter: blur(22px) saturate(1.4);
+      box-shadow: 0 12px 30px rgba(22, 8, 18, 0.42), inset 0 1px rgba(255,255,255,0.2);
+      pointer-events: none;
+      animation: notificationPulse 2s ease-in-out infinite;
+    }
+
+    .notification-icon {
+      display: grid;
+      flex: 0 0 42px;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,0.42);
+      border-radius: 14px;
+      background: linear-gradient(145deg, #ffbed9, #e96da6);
+      box-shadow: 0 3px 10px rgba(255, 105, 171, 0.3);
+      font-size: 1.2rem;
+    }
+
+    .notification-copy {
+      display: grid;
+      flex: 1;
+      min-width: 0;
+      gap: 2px;
+    }
+
+    .notification-title {
+      font-family: "Playfair Display", serif;
+      font-size: 0.92rem;
+      font-weight: 600;
+      letter-spacing: 0;
+    }
+
+    .notification-hint {
+      color: rgba(255, 242, 248, 0.76);
+      font-family: "Poppins", sans-serif;
+      font-size: 0.74rem;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .notification-dot {
+      flex: 0 0 8px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ff9bc6;
+      box-shadow: 0 0 12px rgba(255, 141, 189, 0.9);
+    }
+
+    @keyframes notificationPulse {
+      0%, 100% {
+        box-shadow: 0 12px 30px rgba(22, 8, 18, 0.42), inset 0 1px rgba(255,255,255,0.2);
+      }
+      50% {
+        box-shadow: 0 14px 34px rgba(255, 105, 171, 0.38), inset 0 1px rgba(255,255,255,0.24);
+      }
+    }
+
+    .stage-screen {
+      width: min(560px, 92vw);
+      min-height: 320px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 30px 24px;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 24px;
+      background: linear-gradient(145deg, rgba(255, 225, 239, 0.1), rgba(255,255,255,0.035));
+      text-align: center;
+      box-shadow: inset 0 1px rgba(255,255,255,0.1), 0 18px 46px rgba(0,0,0,0.22);
+      animation: riseIn 0.55s ease both;
+    }
+
+    .stage-screen:not([hidden]) {
+      display: flex;
+    }
+
+    #lockerStage:not([hidden]) {
+      animation: lockerArrival 0.8s cubic-bezier(0.18, 0.78, 0.24, 1) both;
+    }
+
+    .stage-icon {
+      font-size: clamp(4rem, 14vw, 6.5rem);
+      line-height: 1;
+      filter: drop-shadow(0 0 20px rgba(255, 157, 202, 0.4));
+    }
+
+    .stage-title {
+      margin: 0;
+      color: #ffe3ef;
+      font-family: "Great Vibes", cursive;
+      font-size: clamp(2.6rem, 8vw, 4rem);
+      font-weight: 400;
+    }
+
+    .stage-description {
+      max-width: 400px;
+      color: rgba(255, 242, 248, 0.82);
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.3rem;
+      line-height: 1.45;
+    }
+
+    .birthday-form {
+      display: grid;
+      width: min(320px, 100%);
+      gap: 10px;
+      text-align: left;
+    }
+
+    .birthday-form label {
+      color: rgba(255, 242, 248, 0.88);
+      font-size: 0.9rem;
+    }
+
+    .birthday-form input {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.08);
+      color: #fff8fc;
+      color-scheme: dark;
+      font: 1rem "Playfair Display", serif;
+    }
+
+    .birthday-form input:focus-visible {
+      outline: 2px solid #ff9bc6;
+      outline-offset: 2px;
+    }
+
+    .birthday-error {
+      margin: 0;
+      color: #ffd1df;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .stage-action {
+      min-width: 180px;
+      border: 1px solid rgba(255,255,255,0.24);
+      border-radius: 999px;
+      padding: 13px 22px;
+      background: linear-gradient(135deg, #ff8fbd, #d94991);
+      box-shadow: 0 9px 24px rgba(255, 86, 154, 0.28);
+      color: #fff;
+      font: 600 0.96rem "Playfair Display", serif;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .stage-action:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 13px 30px rgba(255, 86, 154, 0.4);
+    }
+
+    .stage-back {
+      border: 0;
+      background: transparent;
+      color: rgba(255, 235, 245, 0.78);
+      font: 0.9rem "Playfair Display", serif;
+      cursor: pointer;
+    }
+
+    .stage-back:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    .locker-visual {
+      display: grid;
+      width: 170px;
+      height: 210px;
+      place-items: center;
+      border: 2px solid rgba(255, 220, 237, 0.62);
+      border-radius: 22px 22px 16px 16px;
+      background: linear-gradient(145deg, rgba(255, 174, 211, 0.24), rgba(81, 30, 65, 0.52));
+      box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.06), 0 15px 35px rgba(0,0,0,0.2);
+      font-size: 5rem;
+    }
+
+    #lockerStage:not([hidden]) .locker-visual {
+      animation: lockerUnlockReveal 1s cubic-bezier(0.2, 0.75, 0.25, 1) both;
+    }
+
+    .letter-key {
+      display: inline-block;
+      font-size: 2.8rem;
+      transform: rotate(-35deg);
+      filter: drop-shadow(0 0 12px rgba(255, 217, 139, 0.65));
+    }
+
+    .letter-content {
+      display: none;
+      width: min(820px, 92vw);
+      padding: 0 8px 8px;
+      color: #fffafc;
+    }
+
+    .letter-content.visible {
+      position: relative;
+      z-index: 1;
+      display: block;
+      max-height: calc(100vh - 48px);
+      max-height: calc(100dvh - 48px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 24px clamp(18px, 5vw, 42px);
+      border: 1px solid rgba(255,255,255,0.13);
+      border-radius: 24px;
+      background:
+        linear-gradient(145deg, rgba(255,255,255,0.075), rgba(255,255,255,0.025)),
+        rgba(35, 15, 31, 0.76);
+      box-shadow: 0 24px 70px rgba(0,0,0,0.38), 0 0 45px rgba(255, 104, 169, 0.14), inset 0 1px rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      animation: letterReveal 1s cubic-bezier(0.16, 0.8, 0.24, 1) both;
+    }
+
+    .letter-content.visible::after {
+      content: "";
+      position: absolute;
+      top: -30%;
+      bottom: -30%;
+      left: -55%;
+      width: 38%;
+      pointer-events: none;
+      transform: skewX(-18deg);
+      background: linear-gradient(90deg, transparent, rgba(255, 224, 240, 0.13), transparent);
+      animation: letterSheen 1.35s ease-out 0.3s both;
+    }
+
+    .letter-back {
+      margin-bottom: 18px;
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 999px;
+      padding: 10px 16px;
+      background: rgba(255,255,255,0.08);
+      color: #fff1f7;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .letter-header {
+      font-family: "Great Vibes", cursive;
+      font-size: clamp(2.6rem, 7vw, 4rem);
+      color: #ffd7ec;
+      margin-bottom: 12px;
+    }
+
+    .letter-body {
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(1.15rem, 2vw, 1.65rem);
+      line-height: 1.7;
+      color: rgba(255, 246, 251, 0.94);
+      white-space: pre-line;
+    }
+
+    .song-tag {
+      position: fixed;
+      bottom: 18px;
+      left: 22px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #FFEAF4;
+      border-radius: 999px;
+      padding: 8px 14px;
+      letter-spacing: 0.08em;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      backdrop-filter: blur(8px);
+      z-index: 15;
+    }
+
+    .heart-burst-layer {
+      position: fixed;
+      z-index: 30;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .page-reveal {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background: radial-gradient(ellipse at center, var(--reveal-glow, rgba(255, 165, 211, 0.26)), transparent 62%);
+      animation: zoomFadeReveal 1.05s cubic-bezier(0.2, 0.72, 0.22, 1) forwards;
+    }
+
+    @keyframes zoomFadeReveal {
+      0% {
+        opacity: 0;
+        transform: scale(0.91);
+      }
+      24% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: scale(1.07);
+      }
+    }
+
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(28px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes messageGlow {
+      from { transform: scale(0.96) rotate(-3deg); opacity: 0.65; }
+      to { transform: scale(1.06) rotate(3deg); opacity: 1; }
+    }
+
+    @keyframes lockerArrival {
+      from { opacity: 0; transform: perspective(900px) rotateY(-12deg) translateX(34px) scale(0.94); filter: blur(8px); }
+      to { opacity: 1; transform: perspective(900px) rotateY(0) translateX(0) scale(1); filter: blur(0); }
+    }
+
+    @keyframes lockerUnlockReveal {
+      0% { opacity: 0; transform: translateY(18px) scale(0.72) rotate(-8deg); }
+      65% { opacity: 1; transform: translateY(-5px) scale(1.06) rotate(2deg); }
+      100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+    }
+
+    @keyframes letterReveal {
+      from { opacity: 0; transform: perspective(1100px) rotateX(10deg) translateY(44px) scale(0.92); filter: blur(9px); }
+      65% { opacity: 1; }
+      to { opacity: 1; transform: perspective(1100px) rotateX(0) translateY(0) scale(1); filter: blur(0); }
+    }
+
+    @keyframes letterSheen {
+      from { left: -55%; }
+      to { left: 125%; }
+    }
+
+    @keyframes floatHeart {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    @keyframes flutterUp {
+      0% { opacity: 0; transform: translate(0, 10px) rotate(-18deg) scale(0.8); }
+      10% { opacity: 0.9; }
+      30% { opacity: 0.78; transform: translate(10px, -30px) rotate(14deg) scale(1); }
+      55% { opacity: 0.58; transform: translate(-9px, -65px) rotate(-12deg) scale(1.1); }
+      80% { opacity: 0.32; transform: translate(8px, -98px) rotate(12deg) scale(1.25); }
+      100% { opacity: 0; transform: translate(0, -135px) rotate(-15deg) scale(1.45); }
+    }
+
+    @media (max-width: 760px) {
+      .login-screen {
+        padding: max(24px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+      }
+
+      .login-card {
+        width: min(480px, 100%);
+        padding: 24px 20px 22px;
+      }
+
+      .story-screen,
+      .final-screen,
+      .message-screen {
+        padding-top: max(24px, env(safe-area-inset-top));
+        padding-bottom: max(24px, env(safe-area-inset-bottom));
+      }
+
+      .story-screen {
+        padding-right: 16px;
+        padding-left: 16px;
+        justify-content: safe center;
+      }
+
+      .story-screen .subtitle-2 {
+        margin-bottom: 24px;
+      }
+
+      .meter-box {
+        width: min(520px, 92vw);
+      }
+
+      .letter-shell,
+      .message-panel {
+        width: 100%;
+      }
+
+      .letter-shell {
+        padding: 16px 12px 12px;
+        gap: 14px;
+      }
+
+      .message-panel {
+        padding: 12px;
+        border-bottom: 0;
+      }
+
+      .message-card {
+        width: min(360px, 100%);
+      }
+
+      .stage-screen {
+        width: 100%;
+        min-height: 0;
+        padding: 24px 18px;
+        gap: 12px;
+      }
+
+      .stage-action,
+      .submit-btn {
+        min-height: 48px;
+      }
+
+      .stage-back {
+        min-height: 44px;
+        padding: 10px 12px;
+      }
+
+      .letter-back {
+        min-height: 44px;
+      }
+
+      .letter-content.visible {
+        max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 32px);
+        padding: 20px 18px;
+      }
+
+      .song-tag {
+        display: none;
+      }
+    }
+
+    @media (max-height: 620px) {
+      .login-screen,
+      .story-screen,
+      .final-screen,
+      .message-screen {
+        padding-top: max(16px, env(safe-area-inset-top));
+        padding-bottom: max(16px, env(safe-area-inset-bottom));
+      }
+
+      .story-screen .title {
+        margin-bottom: 10px;
+      }
+
+      .story-screen .subtitle-2 {
+        margin-bottom: 16px;
+      }
+
+      .story-screen .heart-game-wrap {
+        margin-top: 10px;
+      }
+
+      .heart-button {
+        font-size: clamp(3rem, 10vh, 6rem);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .message-screen::before,
+      #lockerStage:not([hidden]),
+      #lockerStage:not([hidden]) .locker-visual,
+      .heart-burst-layer .page-reveal,
+      .letter-content.visible,
+      .letter-content.visible::after {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+      }
+    }
+
+    @media (hover: none) {
+      .submit-btn:hover,
+      .stage-action:hover,
+      .stage-back:hover,
+      .message-card:hover,
+      .heart-button:hover {
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="loginScreen" class="screen login-screen active">
+    <form id="loginForm" class="login-card" novalidate>
+      <div class="subhead">
+        <span class="tagline">That journey Sealed with love..</span>
+        <span>da madhu mah</span><span class="heart-mark">🖤</span>
+      </div>
+
+      <div class="field">
+        <label for="username">Username</label>
+        <input id="username" name="username" type="text" placeholder="Enter your username" required />
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" placeholder="Enter your password" required />
+      </div>
+
+      <button class="submit-btn" type="submit">Continue Your Journey</button>
+      <p id="loginError" class="login-error" role="alert" hidden>Incorrect username or password.</p>
+    </form>
+  </div>
+
+  <div id="storyScreen" class="screen story-screen">
+    <div class="title">Our Beautiful Story</div>
+    <div class="subtitle-2">A cherished memory forever etched in the soul 🩵</div>
+    <div class="mini-text">With every beat, my heart keeps choosing you.</div>
+    <div class="heart-game-wrap">
+      <div class="meter-box">
+        <div id="meterFill" class="meter-fill"></div>
+      </div>
+      <button id="heartButton" class="heart-button" aria-label="Touch my heart" title="Touch my heart">❤</button>
+      <div id="percentage" class="percentage">0%</div>
+      <div class="floating-butterflies" id="floatingButterflies"></div>
+    </div>
+  </div>
+
+  <div id="finalScreen" class="screen final-screen">
+    <div class="letter-shell">
+      <div class="message-panel">
+        <button id="messageCard" class="message-card" type="button" aria-label="Press and hold to open the message">
+          <img class="poster-photo" src="WhatsApp%20Image%202026-10-09%20at%2012.36.08%20AM.jpeg" alt="Madhu tattoo with a heart" draggable="false" />
+          <div class="open-text" aria-hidden="true">
+            <span class="notification-icon">💌</span>
+            <span class="notification-copy">
+              <span class="notification-title">Open My Heart</span>
+              <span class="notification-hint">Hold</span>
+            </span>
+            <span class="notification-dot"></span>
+          </div>
+        </button>
+      </div>
+
+      <div id="keyStage" class="stage-screen" aria-live="polite" hidden>
+        <div class="stage-icon" aria-hidden="true">🗝️</div>
+        <h2 class="stage-title">A Key for You</h2>
+        <p class="stage-description">You filled my heart with love. Claim your special key to open the locker.</p>
+        <button id="claimKey" class="stage-action" type="button">Claim My Key</button>
+        <button id="backToPhoto" class="stage-back" type="button">Back to photo</button>
+      </div>
+
+      <div id="birthdayStage" class="stage-screen" aria-live="polite" hidden>
+        <div class="stage-icon" aria-hidden="true">🎂</div>
+        <h2 class="stage-title">One Last Little Secret</h2>
+        <p class="stage-description">Enter your date of birth to open your love locker.</p>
+        <form id="birthdayForm" class="birthday-form">
+          <label for="birthdayInput">Your date of birth</label>
+          <input id="birthdayInput" name="birthday" type="date" autocomplete="bday" required aria-describedby="birthdayError" />
+          <p id="birthdayError" class="birthday-error" role="alert" hidden>That date doesn't match. Please try again.</p>
+          <button class="stage-action" type="submit">Continue to locker</button>
+        </form>
+        <button id="backToKey" class="stage-back" type="button">Back to your key</button>
+      </div>
+
+      <div id="lockerStage" class="stage-screen" aria-live="polite" hidden>
+        <div class="locker-visual" aria-hidden="true">🔐</div>
+        <h2 class="stage-title">A Little Love Locker</h2>
+        <p class="stage-description">Your key is ready. Unlock your special message.</p>
+        <button id="unlockLocker" class="stage-action" type="button"><span class="letter-key" aria-hidden="true">🗝️</span> Unlock</button>
+        <button id="backToBirthday" class="stage-back" type="button">Back to birthday</button>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="messageScreen" class="screen message-screen">
+    <div id="letterContent" class="letter-content" aria-live="polite">
+      <button id="letterBack" class="letter-back" type="button">← Back to locker</button>
+      <div class="letter-header">To My Love</div>
+      <div class="letter-body">My madhu,
+
+Every moment with you feels like a soft dream I never want to wake up from.
+You are my peace, my favorite smile, my calm after every storm, and the most beautiful chapter of my life.
+I love the way your laughter fills the room, the way your eyes make everything feel lighter, and the way your presence turns even ordinary days into unforgettable memories.
+You are not just someone I love; you are the person I choose, again and again, in every lifetime and every dream.
+I will keep choosing you, keeping you close in my heart, and loving you in every little way I can.
+
+Forever yours,
+With all my heart 💖</div>
+    </div>
+  </div>
+
+  <div class="song-tag">Romantic Playlist</div>
+  <div id="heartBurstLayer" class="heart-burst-layer" aria-hidden="true"></div>
+
+  <audio id="loveSong" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_4de7251b7d.mp3?filename=love-story-12817.mp3" type="audio/mpeg" />
+  </audio>
+
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const loginError = document.getElementById('loginError');
+    const storyScreen = document.getElementById('storyScreen');
+    const finalScreen = document.getElementById('finalScreen');
+    const messageScreen = document.getElementById('messageScreen');
+    const meterFill = document.getElementById('meterFill');
+    const percentage = document.getElementById('percentage');
+    const heartButton = document.getElementById('heartButton');
+    const floatingButterflies = document.getElementById('floatingButterflies');
+    const messageCard = document.getElementById('messageCard');
+    const letterContent = document.getElementById('letterContent');
+    const letterBack = document.getElementById('letterBack');
+    const loveSong = document.getElementById('loveSong');
+    const photoStage = document.querySelector('.message-panel');
+    const keyStage = document.getElementById('keyStage');
+    const birthdayStage = document.getElementById('birthdayStage');
+    const lockerStage = document.getElementById('lockerStage');
+    const claimKey = document.getElementById('claimKey');
+    const birthdayForm = document.getElementById('birthdayForm');
+    const birthdayInput = document.getElementById('birthdayInput');
+    const birthdayError = document.getElementById('birthdayError');
+    const unlockLocker = document.getElementById('unlockLocker');
+    const backToPhoto = document.getElementById('backToPhoto');
+    const backToKey = document.getElementById('backToKey');
+    const backToBirthday = document.getElementById('backToBirthday');
+    const heartBurstLayer = document.getElementById('heartBurstLayer');
+
+    let progress = 0;
+    let progressResetTimeout;
+    let holdStartedAt = 0;
+    let holdAnimationFrame;
+    let hapticInterval;
+    let isHoldingHeart = false;
+    const holdDuration = 3000;
+
+    function stopHeartVibration() {
+      if (hapticInterval) {
+        clearInterval(hapticInterval);
+        hapticInterval = undefined;
+      }
+      if (typeof navigator.vibrate === 'function') navigator.vibrate(0);
+    }
+
+    function burstEffect(theme) {
+      const effects = {
+        story: { color: 'rgba(255, 150, 200, 0.9)', glow: 'rgba(255, 111, 174, 0.72)' },
+        photo: { color: 'rgba(155, 220, 255, 0.92)', glow: 'rgba(101, 194, 255, 0.75)' },
+        key: { color: 'rgba(255, 229, 161, 0.94)', glow: 'rgba(255, 201, 91, 0.78)' },
+        locker: { color: 'rgba(255, 218, 126, 0.96)', glow: 'rgba(255, 187, 48, 0.82)' },
+        message: { color: 'rgba(255, 180, 217, 0.94)', glow: 'rgba(255, 119, 181, 0.8)' }
+      };
+      const effect = effects[theme];
+      if (!effect) return;
+
+      const reveal = document.createElement('span');
+      reveal.className = 'page-reveal';
+      reveal.style.setProperty('--reveal-glow', effect.glow);
+      heartBurstLayer.appendChild(reveal);
+      setTimeout(() => reveal.remove(), 1150);
+    }
+
+    function showScreen(screen, effectTheme) {
+      const screens = document.querySelectorAll('.screen');
+      const isChangingScreen = !screen.classList.contains('active');
+      screens.forEach((el) => {
+        el.classList.remove('active');
+      });
+      screen.classList.add('active');
+      if (isChangingScreen) {
+        const screenEffects = effectTheme || {
+          storyScreen: 'story',
+          finalScreen: 'photo',
+          messageScreen: 'message'
+        }[screen.id];
+        burstEffect(screenEffects);
+      }
+    }
+
+    function startJourney() {
+      if (usernameInput.value !== 'loveyou' || passwordInput.value !== 'bubu') {
+        loginError.hidden = false;
+        return;
+      }
+
+      loginError.hidden = true;
+      showScreen(storyScreen);
+    }
+
+    loginForm.addEventListener('input', function () {
+      loginError.hidden = true;
+    });
+
+    loginForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+      startJourney();
+    });
+
+    heartButton.addEventListener('click', function () {
+      if (progress >= 100) return;
+      clearTimeout(progressResetTimeout);
+      progress = Math.min(progress + 5, 100);
+      meterFill.style.width = progress + '%';
+      percentage.textContent = progress + '%';
+
+      const butterflyHues = [0, 55, 110, 175, 230, 290];
+      for (let i = 0; i < 1; i++) {
+        const butterfly = document.createElement('span');
+        const hue = butterflyHues[Math.floor(Math.random() * butterflyHues.length)];
+        butterfly.textContent = '🦋';
+        butterfly.style.left = (Math.random() * 80 + 10) + '%';
+        butterfly.style.top = (Math.random() * 45 + 20) + '%';
+        butterfly.style.filter = `hue-rotate(${hue}deg) drop-shadow(0 0 8px hsl(${hue} 100% 75%))`;
+        butterfly.style.animationDelay = (Math.random() * 0.4) + 's';
+        floatingButterflies.appendChild(butterfly);
+        setTimeout(() => butterfly.remove(), 3400);
+      }
+
+      for (let i = 0; i < 1; i++) {
+        const blackHeart = document.createElement('span');
+        blackHeart.className = 'flying-black-heart';
+        blackHeart.textContent = '🖤';
+        blackHeart.style.left = (Math.random() * 80 + 10) + '%';
+        blackHeart.style.top = (Math.random() * 45 + 20) + '%';
+        blackHeart.style.animationDelay = (Math.random() * 0.4) + 's';
+        floatingButterflies.appendChild(blackHeart);
+        setTimeout(() => blackHeart.remove(), 3400);
+      }
+
+      const skyHeart = document.createElement('span');
+      skyHeart.className = 'flying-sky-heart';
+      skyHeart.textContent = '🩵';
+      skyHeart.style.left = (Math.random() * 80 + 10) + '%';
+      skyHeart.style.top = (Math.random() * 45 + 20) + '%';
+      skyHeart.style.animationDelay = (Math.random() * 0.4) + 's';
+      floatingButterflies.appendChild(skyHeart);
+      setTimeout(() => skyHeart.remove(), 3400);
+
+      if (progress >= 100) {
+        clearTimeout(progressResetTimeout);
+        setTimeout(() => {
+          showScreen(finalScreen);
+          finalScreen.classList.add('active');
+          loveSong.play();
+        }, 300);
+      } else {
+        progressResetTimeout = setTimeout(() => {
+          progress = 0;
+          meterFill.style.width = '0%';
+          percentage.textContent = '0%';
+        }, 1000);
+      }
+    });
+
+    function openLetter() {
+      letterContent.classList.add('visible');
+      showScreen(messageScreen);
+    }
+
+    function updateHoldProgress(timestamp) {
+      if (!isHoldingHeart) return;
+
+      const fraction = Math.min((timestamp - holdStartedAt) / holdDuration, 1);
+
+      if (fraction === 1) {
+        isHoldingHeart = false;
+        stopHeartVibration();
+        messageCard.classList.remove('is-heartbeating');
+        photoStage.hidden = true;
+        keyStage.hidden = false;
+        burstEffect('key');
+        claimKey.focus();
+        return;
+      }
+
+      holdAnimationFrame = requestAnimationFrame(updateHoldProgress);
+    }
+
+    function startHoldingHeart(event) {
+      if (isHoldingHeart || letterContent.classList.contains('visible')) return;
+      event.preventDefault();
+      isHoldingHeart = true;
+      holdStartedAt = performance.now();
+      messageCard.classList.add('is-heartbeating');
+      if (typeof navigator.vibrate === 'function') {
+        navigator.vibrate(65);
+        hapticInterval = window.setInterval(() => navigator.vibrate(65), 900);
+      }
+      holdAnimationFrame = requestAnimationFrame(updateHoldProgress);
+    }
+
+    function stopHoldingHeart() {
+      if (!isHoldingHeart) return;
+      isHoldingHeart = false;
+      cancelAnimationFrame(holdAnimationFrame);
+      stopHeartVibration();
+      messageCard.classList.remove('is-heartbeating');
+    }
+
+    messageCard.addEventListener('pointerdown', function (event) {
+      startHoldingHeart(event);
+      if (isHoldingHeart) messageCard.setPointerCapture(event.pointerId);
+    });
+    messageCard.addEventListener('pointerup', stopHoldingHeart);
+    messageCard.addEventListener('pointercancel', stopHoldingHeart);
+    messageCard.addEventListener('lostpointercapture', stopHoldingHeart);
+    messageCard.addEventListener('contextmenu', function (event) {
+      event.preventDefault();
+    });
+    messageCard.addEventListener('keydown', function (event) {
+      if (event.key === ' ' || event.key === 'Enter') startHoldingHeart(event);
+    });
+    messageCard.addEventListener('keyup', function (event) {
+      if (event.key === ' ' || event.key === 'Enter') stopHoldingHeart();
+    });
+    window.addEventListener('blur', stopHoldingHeart);
+
+    claimKey.addEventListener('click', function () {
+      keyStage.hidden = true;
+      birthdayStage.hidden = false;
+      birthdayError.hidden = true;
+      burstEffect('key');
+      birthdayInput.focus();
+    });
+
+    birthdayForm.addEventListener('input', function () {
+      birthdayError.hidden = true;
+    });
+
+    birthdayForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+      if (birthdayInput.value !== '2006-01-18') {
+        birthdayError.hidden = false;
+        birthdayInput.focus();
+        return;
+      }
+
+      birthdayError.hidden = true;
+      birthdayStage.hidden = true;
+      lockerStage.hidden = false;
+      burstEffect('locker');
+      unlockLocker.focus();
+    });
+
+    unlockLocker.addEventListener('click', openLetter);
+
+    backToPhoto.addEventListener('click', function () {
+      keyStage.hidden = true;
+      photoStage.hidden = false;
+      burstEffect('photo');
+    });
+
+    backToKey.addEventListener('click', function () {
+      birthdayStage.hidden = true;
+      keyStage.hidden = false;
+      burstEffect('key');
+    });
+
+    backToBirthday.addEventListener('click', function () {
+      lockerStage.hidden = true;
+      birthdayStage.hidden = false;
+      burstEffect('key');
+      birthdayInput.focus();
+    });
+
+    letterBack.addEventListener('click', function () {
+      letterContent.classList.remove('visible');
+      showScreen(finalScreen, 'locker');
+      lockerStage.hidden = false;
+    });
+
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    document.addEventListener('click', function () {
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+    }, { once: true });
+  </script>
+</body>
+</html>

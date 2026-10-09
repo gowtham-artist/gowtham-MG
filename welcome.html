@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#120d09">
+
+<title>Our Story</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: max(24px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+
+    background:
+        radial-gradient(circle at center, #3b2a1f 0%, #120d09 45%, #050403 100%);
+
+    color: #f5d99a;
+}
+
+/* Golden glow */
+
+.glow {
+    position: absolute;
+    width: min(500px, 120vw);
+    aspect-ratio: 1;
+
+    background: radial-gradient(
+        circle,
+        rgba(212,175,55,0.25),
+        transparent 70%
+    );
+
+    animation: glowPulse 4s ease-in-out infinite;
+}
+
+/* Main content */
+
+.content {
+    position: relative;
+    width: min(100%, 640px);
+    text-align: center;
+    z-index: 2;
+
+    animation: luxuryReveal 2.5s ease forwards;
+}
+
+/* Small text */
+
+.subtitle {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(12px, 3vw, 15px);
+    letter-spacing: clamp(2px, 1.5vw, 6px);
+    text-transform: uppercase;
+
+    opacity: 0;
+    animation: fadeUp 1.5s ease 0.8s forwards;
+}
+
+/* Main title */
+
+h1 {
+    margin: 15px 0;
+
+    font-family: "Great Vibes", cursive;
+    font-size: clamp(60px, 10vw, 110px);
+
+    font-weight: normal;
+
+    background: linear-gradient(
+        90deg,
+        #9b6b20,
+        #fff1a8,
+        #d4af37,
+        #fff1a8,
+        #9b6b20
+    );
+
+    background-size: 300% auto;
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    animation:
+        goldShine 4s linear infinite,
+        titleReveal 2s ease forwards;
+}
+
+/* Bottom line */
+
+.line {
+    width: 0;
+    max-width: 82vw;
+    height: 1px;
+
+    margin: 20px auto;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #d4af37,
+        transparent
+    );
+
+    animation: lineGrow 2s ease 1.5s forwards;
+}
+
+/* Story text */
+
+.story {
+    font-family: "Playfair Display", serif;
+
+    font-size: clamp(14px, 4vw, 17px);
+    letter-spacing: clamp(1px, 0.6vw, 2px);
+
+    opacity: 0;
+
+    animation: fadeUp 1.5s ease 2s forwards;
+}
+
+/* Animations */
+
+@keyframes luxuryReveal {
+
+    from {
+        opacity: 0;
+        transform: scale(0.85);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes titleReveal {
+
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+        letter-spacing: 5px;
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        letter-spacing: 2px;
+    }
+}
+
+@keyframes fadeUp {
+
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes lineGrow {
+
+    from {
+        width: 0;
+    }
+
+    to {
+        width: 280px;
+    }
+}
+
+@keyframes goldShine {
+
+    0% {
+        background-position: 300% center;
+    }
+
+    100% {
+        background-position: -300% center;
+    }
+}
+
+@keyframes glowPulse {
+
+    0%, 100% {
+        transform: scale(0.9);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+}
+
+@media (max-height: 480px) {
+    body {
+        padding-top: max(16px, env(safe-area-inset-top));
+        padding-bottom: max(16px, env(safe-area-inset-bottom));
+    }
+
+    h1 {
+        margin: 8px 0;
+    }
+
+    .line {
+        margin: 12px auto;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="glow"></div>
+
+<div class="content">
+
+    <div class="subtitle">
+        Welcome
+    </div>
+
+    <h1>
+        Our Story
+    </h1>
+
+    <div class="line"></div>
+
+    <div class="story">
+        A story worth remembering...
+    </div>
+
+</div>
+
+</body>
+</html>

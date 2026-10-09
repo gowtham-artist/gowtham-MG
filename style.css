@@ -1,0 +1,179 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Poppins", sans-serif;
+    background:
+        radial-gradient(circle at 20% 20%, #ff7eb3 0%, transparent 35%),
+        radial-gradient(circle at 80% 80%, #8e2de2 0%, transparent 35%),
+        linear-gradient(135deg, #12001f, #3b0a45, #17001f);
+    overflow: hidden;
+}
+
+/* Floating romantic glow */
+
+body::before,
+body::after {
+    content: "♥️";
+    position: fixed;
+    font-size: 180px;
+    color: rgba(255, 105, 180, 0.08);
+    animation: float 6s ease-in-out infinite;
+    pointer-events: none;
+}
+
+body::before {
+    top: 5%;
+    left: 8%;
+}
+
+body::after {
+    bottom: 5%;
+    right: 8%;
+    animation-delay: 2s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) rotate(-10deg);
+    }
+
+    50% {
+        transform: translateY(-30px) rotate(10deg);
+    }
+}
+
+/* Login Box */
+
+.login-container,
+.login-box,
+.container {
+    position: relative;
+    width: 380px;
+    padding: 45px 35px;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.45),
+        inset 0 0 30px rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    text-align: center;
+    color: white;
+}
+
+/* Heading */
+
+h1,
+h2 {
+    margin-bottom: 10px;
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 34px;
+    font-weight: 500;
+    font-style: italic;
+    letter-spacing: 1.5px;
+    color: #fff;
+    text-shadow:
+        0 0 8px rgba(255, 105, 180, 0.8),
+        0 0 20px rgba(255, 105, 180, 0.5);
+}
+.login-container p,
+.login-box p,
+.container p {
+    margin-bottom: 25px;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+/* Input Area */
+
+input {
+    width: 100%;
+    height: 52px;
+    margin: 10px 0;
+    padding: 0 18px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 14px;
+    outline: none;
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    font-size: 15px;
+    transition: 0.3s ease;
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+input:focus {
+    border-color: #ff69b4;
+    box-shadow: 0 0 18px rgba(255, 105, 180, 0.45);
+    background: rgba(255, 255, 255, 0.13);
+}
+
+/* Button */
+
+button,
+input[type="submit"] {
+    width: 100%;
+    height: 52px;
+    margin-top: 18px;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #ff4f9a, #b026ff);
+    box-shadow: 0 8px 25px rgba(255, 55, 160, 0.35);
+    transition: 0.3s ease;
+}
+
+button:hover,
+input[type="submit"]:hover {
+    transform: translateY(-3px);
+    box-shadow:
+        0 12px 30px rgba(255, 55, 160, 0.55),
+        0 0 20px rgba(176, 38, 255, 0.4);
+}
+
+button:active,
+input[type="submit"]:active {
+    transform: scale(0.97);
+}
+
+/* Links */
+
+a {
+    color: #ff8fc7;
+    text-decoration: none;
+    transition: 0.3s ease;
+}
+
+a:hover {
+    color: #ffffff;
+    text-shadow: 0 0 10px #ff69b4;
+}
+
+/* Mobile */
+
+@media (max-width: 480px) {
+    .login-container,
+    .login-box,
+    .container {
+        width: 90%;
+        padding: 35px 25px;
+    }
+
+    h1,
+    h2 {
+        font-size: 27px;
+    }
+}
