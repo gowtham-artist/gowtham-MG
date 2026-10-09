@@ -287,6 +287,7 @@
 
     .floating-butterflies {
       position: absolute;
+      z-index: 3;
       inset: 0;
       pointer-events: none;
       overflow: hidden;
@@ -297,7 +298,7 @@
       font-size: 1.7rem;
       opacity: 0;
       will-change: transform, opacity;
-      animation: flutterUp 2.4s cubic-bezier(0.22, 0.68, 0.32, 1) forwards;
+      animation: flutterUp 2.8s cubic-bezier(0.22, 0.68, 0.32, 1) forwards;
     }
 
     .floating-butterflies .flying-black-heart {
@@ -598,9 +599,12 @@
 
     .birthday-date-wrap {
       position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 54px;
+      gap: 8px;
     }
 
-    .birthday-form input {
+    .birthday-form #birthdayInput {
       width: 100%;
       min-height: 54px;
       border: 1px solid rgba(255, 182, 215, 0.42);
@@ -615,12 +619,34 @@
       touch-action: manipulation;
     }
 
-    .birthday-form input::-webkit-calendar-picker-indicator {
-      cursor: pointer;
-      filter: invert(82%) sepia(23%) saturate(846%) hue-rotate(286deg) brightness(103%);
+    .birthday-form #birthdayInput::placeholder {
+      color: rgba(255, 248, 252, 0.62);
     }
 
-    .birthday-form input:focus-visible {
+    .birthday-calendar {
+      min-width: 54px;
+      min-height: 54px;
+      border: 1px solid rgba(255, 182, 215, 0.42);
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(255, 208, 229, 0.18), rgba(255,255,255,0.07));
+      color: #ffd1e5;
+      font-size: 1.35rem;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .birthday-date-picker {
+      position: absolute;
+      right: 54px;
+      bottom: 0;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .birthday-form #birthdayInput:focus-visible,
+    .birthday-calendar:focus-visible {
       outline: 2px solid #ffd1e5;
       outline-offset: 2px;
       box-shadow: 0 0 0 5px rgba(255, 143, 189, 0.14);
@@ -842,9 +868,9 @@
     @keyframes flutterUp {
       0% { opacity: 0; transform: translate3d(0, 10px, 0) rotate(-18deg) scale(0.8); }
       12% { opacity: 0.9; }
-      35% { opacity: 0.82; transform: translate3d(8px, -60px, 0) rotate(12deg) scale(1); }
-      70% { opacity: 0.55; transform: translate3d(-8px, -145px, 0) rotate(-10deg) scale(1.12); }
-      100% { opacity: 0; transform: translate3d(0, -220px, 0) rotate(14deg) scale(1.2); }
+      35% { opacity: 0.82; transform: translate3d(8px, var(--fly-distance-35), 0) rotate(12deg) scale(1); }
+      70% { opacity: 0.55; transform: translate3d(-8px, var(--fly-distance-70), 0) rotate(-10deg) scale(1.12); }
+      100% { opacity: 0; transform: translate3d(0, var(--fly-distance), 0) rotate(14deg) scale(1.2); }
     }
 
     @media (max-width: 760px) {
@@ -1014,7 +1040,6 @@
       </div>
       <button id="heartButton" class="heart-button" aria-label="Touch my heart" title="Touch my heart">❤</button>
       <div id="percentage" class="percentage">0%</div>
-      <div class="floating-butterflies" id="floatingButterflies"></div>
     </div>
   </div>
 
@@ -1050,7 +1075,9 @@
           <p class="birthday-prompt">Choose the day my heart remembers ♡</p>
           <label for="birthdayInput">Your special date</label>
           <div class="birthday-date-wrap">
-            <input id="birthdayInput" name="birthday" type="date" min="1900-01-01" autocomplete="bday" required aria-describedby="birthdayError" />
+            <input id="birthdayInput" name="birthday" type="text" inputmode="numeric" autocomplete="bday" placeholder="DD / MM / YYYY" maxlength="14" pattern="(0[1-9]|[12][0-9]|3[01]) / (0[1-9]|1[0-2]) / [0-9]{4}" required aria-describedby="birthdayError" />
+            <button id="birthdayCalendar" class="birthday-calendar" type="button" aria-label="Choose date from calendar">📅</button>
+            <input id="birthdayPicker" class="birthday-date-picker" type="date" min="1900-01-01" tabindex="-1" aria-hidden="true" />
           </div>
           <p id="birthdayError" class="birthday-error" role="alert" hidden>That date doesn't match. Please try again.</p>
           <button class="stage-action" type="submit">Continue to locker</button>
@@ -1087,7 +1114,9 @@ With all my heart 💖</div>
   </div>
 
   <div class="song-tag">Romantic Playlist</div>
-  <div id="heartBurstLayer" class="heart-burst-layer" aria-hidden="true"></div>
+  <div id="heartBurstLayer" class="heart-burst-layer" aria-hidden="true">
+    <div class="floating-butterflies" id="floatingButterflies"></div>
+  </div>
 
   <audio id="loveSong" loop>
     <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_4de7251b7d.mp3?filename=love-story-12817.mp3" type="audio/mpeg" />
@@ -1116,6 +1145,8 @@ With all my heart 💖</div>
     const claimKey = document.getElementById('claimKey');
     const birthdayForm = document.getElementById('birthdayForm');
     const birthdayInput = document.getElementById('birthdayInput');
+    const birthdayPicker = document.getElementById('birthdayPicker');
+    const birthdayCalendar = document.getElementById('birthdayCalendar');
     const birthdayError = document.getElementById('birthdayError');
     const unlockLocker = document.getElementById('unlockLocker');
     const backToPhoto = document.getElementById('backToPhoto');
@@ -1132,7 +1163,7 @@ With all my heart 💖</div>
     const holdDuration = 3000;
     const maxFlyingItems = 36;
     const lastPastYear = new Date().getFullYear() - 1;
-    birthdayInput.max = `${lastPastYear}-12-31`;
+    birthdayPicker.max = `${lastPastYear}-12-31`;
 
     function addFlyingEmoji(className, emoji) {
       if (floatingButterflies.childElementCount >= maxFlyingItems) {
@@ -1142,8 +1173,13 @@ With all my heart 💖</div>
       const item = document.createElement('span');
       item.className = className;
       item.textContent = emoji;
-      item.style.left = (Math.random() * 80 + 10) + '%';
-      item.style.top = (Math.random() * 45 + 20) + '%';
+      const heartBounds = heartButton.getBoundingClientRect();
+      item.style.left = (heartBounds.left + heartBounds.width / 2 + (Math.random() * 80 - 40)) + 'px';
+      item.style.top = (heartBounds.top + heartBounds.height / 2) + 'px';
+      const flyDistance = Math.ceil(heartBounds.top + heartBounds.height / 2 + 30);
+      item.style.setProperty('--fly-distance-35', `-${Math.ceil(flyDistance * 0.35)}px`);
+      item.style.setProperty('--fly-distance-70', `-${Math.ceil(flyDistance * 0.7)}px`);
+      item.style.setProperty('--fly-distance', `-${flyDistance}px`);
 
       item.addEventListener('animationend', function () {
         item.remove();
@@ -1325,9 +1361,37 @@ With all my heart 💖</div>
       birthdayError.hidden = true;
     });
 
+    birthdayInput.addEventListener('input', function () {
+      const digits = birthdayInput.value.replace(/\D/g, '').slice(0, 8);
+      const day = digits.slice(0, 2);
+      const month = digits.slice(2, 4);
+      const year = digits.slice(4);
+      birthdayInput.value = [day, month, year].filter(Boolean).join(' / ');
+    });
+
+    birthdayCalendar.addEventListener('click', function () {
+      if (typeof birthdayPicker.showPicker === 'function') {
+        birthdayPicker.showPicker();
+      } else {
+        birthdayPicker.click();
+      }
+    });
+
+    birthdayPicker.addEventListener('change', function () {
+      if (!birthdayPicker.value) return;
+      const [year, month, day] = birthdayPicker.value.split('-');
+      birthdayInput.value = `${day} / ${month} / ${year}`;
+      birthdayError.hidden = true;
+    });
+
     birthdayForm.addEventListener('submit', function (event) {
       event.preventDefault();
-      if (birthdayInput.value !== '2006-01-18') {
+      const match = birthdayInput.value.match(/^(\d{2}) \/ (\d{2}) \/ (\d{4})$/);
+      const birthday = match && `${match[3]}-${match[2]}-${match[1]}`;
+      const parsedDate = match && new Date(Date.UTC(Number(match[3]), Number(match[2]) - 1, Number(match[1])));
+      const isValidDate = parsedDate && parsedDate.getUTCFullYear() === Number(match[3]) &&
+        parsedDate.getUTCMonth() === Number(match[2]) - 1 && parsedDate.getUTCDate() === Number(match[1]);
+      if (!isValidDate || birthday !== '2006-01-18') {
         birthdayError.hidden = false;
         birthdayInput.focus();
         return;
