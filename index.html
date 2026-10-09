@@ -296,21 +296,16 @@
       position: absolute;
       font-size: 1.7rem;
       opacity: 0;
-      mix-blend-mode: screen;
-      text-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
       will-change: transform, opacity;
-      animation: flutterUp 3s ease-in-out forwards;
+      animation: flutterUp 2.4s cubic-bezier(0.22, 0.68, 0.32, 1) forwards;
     }
 
     .floating-butterflies .flying-black-heart {
       font-size: 1.45rem;
-      mix-blend-mode: normal;
-      filter: drop-shadow(0 0 7px rgba(0, 0, 0, 0.8));
     }
 
     .floating-butterflies .flying-sky-heart {
       font-size: 1.5rem;
-      filter: drop-shadow(0 0 8px rgba(135, 206, 250, 0.85));
     }
 
     .final-screen {
@@ -558,6 +553,11 @@
       font-size: clamp(4rem, 14vw, 6.5rem);
       line-height: 1;
       filter: drop-shadow(0 0 20px rgba(255, 157, 202, 0.4));
+    }
+
+    .birthday-icon {
+      color: #ff334f;
+      filter: drop-shadow(0 0 20px rgba(255, 51, 79, 0.48));
     }
 
     .stage-title {
@@ -840,12 +840,11 @@
     }
 
     @keyframes flutterUp {
-      0% { opacity: 0; transform: translate(0, 10px) rotate(-18deg) scale(0.8); }
-      10% { opacity: 0.9; }
-      30% { opacity: 0.78; transform: translate(10px, -30px) rotate(14deg) scale(1); }
-      55% { opacity: 0.58; transform: translate(-9px, -65px) rotate(-12deg) scale(1.1); }
-      80% { opacity: 0.32; transform: translate(8px, -98px) rotate(12deg) scale(1.25); }
-      100% { opacity: 0; transform: translate(0, -135px) rotate(-15deg) scale(1.45); }
+      0% { opacity: 0; transform: translate3d(0, 10px, 0) rotate(-18deg) scale(0.8); }
+      12% { opacity: 0.9; }
+      35% { opacity: 0.82; transform: translate3d(8px, -60px, 0) rotate(12deg) scale(1); }
+      70% { opacity: 0.55; transform: translate3d(-8px, -145px, 0) rotate(-10deg) scale(1.12); }
+      100% { opacity: 0; transform: translate3d(0, -220px, 0) rotate(14deg) scale(1.2); }
     }
 
     @media (max-width: 760px) {
@@ -950,6 +949,10 @@
         margin-top: 10px;
       }
 
+      .floating-butterflies span {
+        animation-duration: 2.1s;
+      }
+
       .heart-button {
         font-size: clamp(3rem, 10vh, 6rem);
       }
@@ -1040,16 +1043,15 @@
       </div>
 
       <div id="birthdayStage" class="stage-screen" aria-live="polite" hidden>
-        <div class="stage-icon" aria-hidden="true">🎂</div>
+        <div class="stage-icon birthday-icon" aria-hidden="true">❤️</div>
         <h2 class="stage-title">One Last Little Secret</h2>
         <p class="stage-description">Enter your date of birth to open your love locker.</p>
         <form id="birthdayForm" class="birthday-form">
           <p class="birthday-prompt">Choose the day my heart remembers ♡</p>
           <label for="birthdayInput">Your special date</label>
           <div class="birthday-date-wrap">
-            <input id="birthdayInput" name="birthday" type="date" min="1900-01-01" autocomplete="bday" required aria-describedby="birthdayHint birthdayError" />
+            <input id="birthdayInput" name="birthday" type="date" min="1900-01-01" autocomplete="bday" required aria-describedby="birthdayError" />
           </div>
-          <p id="birthdayHint" class="birthday-prompt">Only past years are available</p>
           <p id="birthdayError" class="birthday-error" role="alert" hidden>That date doesn't match. Please try again.</p>
           <button class="stage-action" type="submit">Continue to locker</button>
         </form>
@@ -1128,8 +1130,26 @@ With all my heart 💖</div>
     let hapticInterval;
     let isHoldingHeart = false;
     const holdDuration = 3000;
+    const maxFlyingItems = 36;
     const lastPastYear = new Date().getFullYear() - 1;
     birthdayInput.max = `${lastPastYear}-12-31`;
+
+    function addFlyingEmoji(className, emoji) {
+      if (floatingButterflies.childElementCount >= maxFlyingItems) {
+        floatingButterflies.firstElementChild.remove();
+      }
+
+      const item = document.createElement('span');
+      item.className = className;
+      item.textContent = emoji;
+      item.style.left = (Math.random() * 80 + 10) + '%';
+      item.style.top = (Math.random() * 45 + 20) + '%';
+
+      item.addEventListener('animationend', function () {
+        item.remove();
+      }, { once: true });
+      floatingButterflies.appendChild(item);
+    }
 
     function stopHeartVibration() {
       if (hapticInterval) {
@@ -1210,38 +1230,9 @@ With all my heart 💖</div>
       meterFill.style.width = progress + '%';
       percentage.textContent = progress + '%';
 
-      const butterflyHues = [0, 55, 110, 175, 230, 290];
-      for (let i = 0; i < 1; i++) {
-        const butterfly = document.createElement('span');
-        const hue = butterflyHues[Math.floor(Math.random() * butterflyHues.length)];
-        butterfly.textContent = '🦋';
-        butterfly.style.left = (Math.random() * 80 + 10) + '%';
-        butterfly.style.top = (Math.random() * 45 + 20) + '%';
-        butterfly.style.filter = `hue-rotate(${hue}deg) drop-shadow(0 0 8px hsl(${hue} 100% 75%))`;
-        butterfly.style.animationDelay = (Math.random() * 0.4) + 's';
-        floatingButterflies.appendChild(butterfly);
-        setTimeout(() => butterfly.remove(), 3400);
-      }
-
-      for (let i = 0; i < 1; i++) {
-        const blackHeart = document.createElement('span');
-        blackHeart.className = 'flying-black-heart';
-        blackHeart.textContent = '🖤';
-        blackHeart.style.left = (Math.random() * 80 + 10) + '%';
-        blackHeart.style.top = (Math.random() * 45 + 20) + '%';
-        blackHeart.style.animationDelay = (Math.random() * 0.4) + 's';
-        floatingButterflies.appendChild(blackHeart);
-        setTimeout(() => blackHeart.remove(), 3400);
-      }
-
-      const skyHeart = document.createElement('span');
-      skyHeart.className = 'flying-sky-heart';
-      skyHeart.textContent = '🩵';
-      skyHeart.style.left = (Math.random() * 80 + 10) + '%';
-      skyHeart.style.top = (Math.random() * 45 + 20) + '%';
-      skyHeart.style.animationDelay = (Math.random() * 0.4) + 's';
-      floatingButterflies.appendChild(skyHeart);
-      setTimeout(() => skyHeart.remove(), 3400);
+      addFlyingEmoji('', '🦋');
+      addFlyingEmoji('flying-black-heart', '🖤');
+      addFlyingEmoji('flying-sky-heart', '🩵');
 
       if (progress >= 100) {
         clearTimeout(progressResetTimeout);
