@@ -32,7 +32,7 @@
       margin: 0;
       width: 100%;
       min-height: 100%;
-      font-family: "Playfair Display", serif;
+      font-family: "Playfair Display", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", serif;
       background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 35%, #3b1627 100%);
       color: var(--text);
       overflow-x: hidden;
@@ -266,6 +266,10 @@
       animation: floatHeart 2.2s ease-in-out infinite;
       transition: transform 0.2s ease;
       user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-user-drag: none;
       touch-action: manipulation;
     }
 
@@ -295,18 +299,36 @@
 
     .floating-butterflies span {
       position: absolute;
+      font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
       font-size: 1.7rem;
       opacity: 0;
       will-change: transform, opacity;
       animation: flutterUp 2.8s cubic-bezier(0.22, 0.68, 0.32, 1) forwards;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
     }
 
-    .floating-butterflies .flying-black-heart {
+    .floating-butterflies .flying-pink-heart {
       font-size: 1.45rem;
     }
 
-    .floating-butterflies .flying-sky-heart {
+    .floating-butterflies .flying-rose-heart {
       font-size: 1.5rem;
+    }
+
+    .heart-mark,
+    .notification-icon,
+    .stage-icon,
+    .locker-visual,
+    .letter-key,
+    .birthday-calendar,
+    .unlock-scene {
+      font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .final-screen {
@@ -1156,7 +1178,7 @@
 
   <div id="storyScreen" class="screen story-screen">
     <div class="title">Our Beautiful Story</div>
-    <div class="subtitle-2">A cherished memory forever etched in the soul 🩵</div>
+    <div class="subtitle-2">A cherished memory forever etched in the soul 💗</div>
     <div class="mini-text">With every beat, my heart keeps choosing you.</div>
     <div class="heart-game-wrap">
       <div class="meter-box">
@@ -1363,6 +1385,9 @@ With all my heart 💖</div>
         if (cursor !== null) usernameInput.setSelectionRange(cursor, cursor);
       }
     });
+    heartButton.addEventListener('contextmenu', function (event) {
+      event.preventDefault();
+    });
 
     function startJourney() {
       if (usernameInput.value !== 'Loveyou' || passwordInput.value !== 'bubu') {
@@ -1391,8 +1416,8 @@ With all my heart 💖</div>
       percentage.textContent = progress + '%';
 
       addFlyingEmoji('', '🦋');
-      addFlyingEmoji('flying-black-heart', '🖤');
-      addFlyingEmoji('flying-sky-heart', '🩵');
+      addFlyingEmoji('flying-pink-heart', '💗');
+      addFlyingEmoji('flying-rose-heart', '💖');
 
       if (progress >= 100) {
         clearTimeout(progressResetTimeout);
@@ -1502,7 +1527,6 @@ With all my heart 💖</div>
       birthdayStage.hidden = false;
       birthdayError.hidden = true;
       burstEffect('key');
-      birthdayInput.focus();
     });
 
     birthdayForm.addEventListener('input', function () {
@@ -1546,6 +1570,7 @@ With all my heart 💖</div>
       }
 
       birthdayError.hidden = true;
+      birthdayInput.blur();
       birthdayStage.hidden = true;
       lockerStage.hidden = false;
       burstEffect('locker');
@@ -1561,6 +1586,7 @@ With all my heart 💖</div>
     });
 
     backToKey.addEventListener('click', function () {
+      birthdayInput.blur();
       birthdayStage.hidden = true;
       keyStage.hidden = false;
       burstEffect('key');
@@ -1570,7 +1596,6 @@ With all my heart 💖</div>
       lockerStage.hidden = true;
       birthdayStage.hidden = false;
       burstEffect('key');
-      birthdayInput.focus();
     });
 
     letterBack.addEventListener('click', function () {
