@@ -1653,7 +1653,7 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       moveReminderTimer = window.setTimeout(function () {
         moveReminderTimer = 0;
         if (!completedPlayerMove && playlistPanel.hidden) {
-          showMusicCoachmark(`Hold the music circle for ${playerHoldDuration / 1000} seconds, then move it.`);
+          showMusicCoachmark('Press and hold, then move it.');
           scheduleMoveReminder();
         }
       }, tutorialReminderDelay);
@@ -1661,7 +1661,7 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
 
     function remindToTapPlaylist() {
       if (!musicUnlocked || completedPlaylistTap) return;
-      showMusicCoachmark('Tap the music circle to choose a song.');
+      showMusicCoachmark('Tap to change the song.');
       window.clearTimeout(tapReminderTimer);
       tapReminderTimer = window.setTimeout(function () {
         tapReminderTimer = 0;
@@ -2029,7 +2029,7 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       completedPlaylistTap = false;
       selectPlaylistTrack(0, true);
       showScreen(storyScreen);
-      showMusicCoachmark(`Hold the music circle for ${playerHoldDuration / 1000} seconds, then move it.`);
+      showMusicCoachmark('Press and hold, then move it.');
       scheduleMoveReminder();
     }
 
