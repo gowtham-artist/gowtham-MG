@@ -1845,6 +1845,7 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       musicPlayer.classList.toggle('is-expanded', !playlistPanel.hidden);
       if (!playlistPanel.hidden) {
         positionPlaylistPanel();
+        if (completedPlayerMove) completePlaylistTap();
       }
       if (!completedPlayerMove) scheduleMoveReminder();
     });
@@ -1864,9 +1865,7 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
 
     playlistTracks.forEach(function (button) {
       button.addEventListener('click', function () {
-        if (completedPlayerMove) {
-          completePlaylistTap();
-        } else {
+        if (!completedPlayerMove) {
           showMusicCoachmark('Press and hold, then move it.');
           scheduleMoveReminder();
         }
