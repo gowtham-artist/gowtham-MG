@@ -885,8 +885,30 @@
 
     .music-player.is-dragging {
       box-shadow: 0 10px 32px rgba(255,143,189,0.42);
-      transform: scale(1.06);
-      transition: none;
+      animation: musicPlayerFly 0.55s ease-in-out infinite alternate;
+      transition: box-shadow 0.2s ease;
+    }
+
+    .music-player.is-dragging::after {
+      position: absolute;
+      top: 6px;
+      right: 46px;
+      color: #ffd7ec;
+      content: "✦";
+      font-size: 1.2rem;
+      pointer-events: none;
+      text-shadow: 0 0 10px rgba(255, 155, 198, 0.9);
+      animation: musicSparkleTrail 0.55s ease-out infinite;
+    }
+
+    @keyframes musicPlayerFly {
+      from { transform: translateY(2px) rotate(-9deg) scale(1.08); }
+      to { transform: translateY(-5px) rotate(9deg) scale(1.12); }
+    }
+
+    @keyframes musicSparkleTrail {
+      from { opacity: 0.9; transform: translate(0, 0) scale(0.7) rotate(0); }
+      to { opacity: 0; transform: translate(-16px, -13px) scale(1.25) rotate(35deg); }
     }
 
     .music-player[hidden],
@@ -969,6 +991,11 @@
       font-size: 0.8rem;
     }
 
+    .playback-toggle:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
     .playlist-panel {
       position: absolute;
       right: 0;
@@ -988,6 +1015,24 @@
     .music-player.menu-opens-below .playlist-panel {
       top: calc(100% + 8px);
       bottom: auto;
+    }
+
+    .music-coachmark {
+      position: fixed;
+      z-index: 41;
+      width: min(210px, calc(100vw - 80px));
+      padding: 9px 12px;
+      border: 1px solid rgba(255,190,220,0.28);
+      border-radius: 14px;
+      background: rgba(34,16,30,0.96);
+      box-shadow: 0 7px 22px rgba(0,0,0,0.3);
+      color: #ffe2ef;
+      font: 0.76rem/1.4 "Playfair Display", serif;
+      pointer-events: none;
+    }
+
+    .music-coachmark[hidden] {
+      display: none;
     }
 
     .playlist-player-controls {
@@ -1318,6 +1363,11 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
+      .music-player.is-dragging,
+      .music-player.is-dragging::after {
+        animation: none;
+      }
+
       #lockerStage:not([hidden]),
       #lockerStage:not([hidden]) .locker-visual,
       .heart-burst-layer .page-reveal,
@@ -1491,6 +1541,7 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       </div>
     </div>
   </div>
+  <div id="musicCoachmark" class="music-coachmark" role="status" aria-live="polite" hidden></div>
   <div id="heartBurstLayer" class="heart-burst-layer" aria-hidden="true">
     <div class="floating-butterflies" id="floatingButterflies"></div>
   </div>
@@ -1514,6 +1565,7 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
     const letterBack = document.getElementById('letterBack');
     const loveSong = document.getElementById('loveSong');
     const musicPlayer = document.getElementById('musicPlayer');
+    const musicCoachmark = document.getElementById('musicCoachmark');
     const playlistToggle = document.getElementById('playlistToggle');
     const playlistPanel = document.getElementById('playlistPanel');
     const playerStatus = document.getElementById('playerStatus');
@@ -1525,10 +1577,14 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       { title: 'Radhimaa', source: 'Radhimaa.mp3' }
     ];
     let currentTrackIndex = 0;
+    let musicUnlocked = false;
     let dragHoldTimer = 0;
     let activeDragPointer = null;
     let dragOffsetX = 0;
     let dragOffsetY = 0;
+    let dragOriginLeft = 0;
+    let dragOriginTop = 0;
+    let dragHasMoved = false;
     let suppressPlaylistClick = false;
     const musicPlayerPositionKey = 'loveStoryMusicPlayerPosition';
 
@@ -1560,6 +1616,27 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       playlistPanel.style.left = `${left - playerRect.left}px`;
       playlistPanel.style.right = 'auto';
       musicPlayer.classList.toggle('menu-opens-below', playerRect.top < panelHeight + 24);
+    }
+
+    function showMusicCoachmark(message) {
+      musicCoachmark.textContent = message;
+      musicCoachmark.hidden = false;
+      positionMusicCoachmark();
+    }
+
+    function positionMusicCoachmark() {
+      if (musicCoachmark.hidden || musicPlayer.hidden) return;
+      const playerRect = musicPlayer.getBoundingClientRect();
+      const coachmarkRect = musicCoachmark.getBoundingClientRect();
+      const left = Math.max(12, Math.min(
+        playerRect.left + (playerRect.width - coachmarkRect.width) / 2,
+        window.innerWidth - coachmarkRect.width - 12
+      ));
+      const top = playerRect.top >= coachmarkRect.height + 20
+        ? playerRect.top - coachmarkRect.height - 8
+        : Math.min(playerRect.bottom + 8, window.innerHeight - coachmarkRect.height - 12);
+      musicCoachmark.style.left = `${left}px`;
+      musicCoachmark.style.top = `${top}px`;
     }
 
     function restoreMusicPlayerPosition() {
@@ -1595,6 +1672,10 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       const playerRect = musicPlayer.getBoundingClientRect();
       dragOffsetX = event.clientX - playerRect.left;
       dragOffsetY = event.clientY - playerRect.top;
+      const origin = clampMusicPlayerPosition(playerRect.left, playerRect.top);
+      dragOriginLeft = origin.left;
+      dragOriginTop = origin.top;
+      dragHasMoved = false;
       activeDragPointer = event.pointerId;
       dragHoldTimer = window.setTimeout(function () {
         musicPlayer.classList.add('is-dragging');
@@ -1605,7 +1686,12 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
     playlistToggle.addEventListener('pointermove', function (event) {
       if (activeDragPointer !== event.pointerId || !musicPlayer.classList.contains('is-dragging')) return;
       event.preventDefault();
-      setMusicPlayerPosition(event.clientX - dragOffsetX, event.clientY - dragOffsetY);
+      const position = setMusicPlayerPosition(event.clientX - dragOffsetX, event.clientY - dragOffsetY);
+      if (!dragHasMoved && Math.hypot(position.left - dragOriginLeft, position.top - dragOriginTop) >= 8) {
+        dragHasMoved = true;
+        showMusicCoachmark('Tap the music circle, then choose a song from the playlist.');
+      }
+      if (dragHasMoved) positionMusicCoachmark();
     });
 
     function stopMusicPlayerDrag(event) {
@@ -1614,15 +1700,21 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       dragHoldTimer = 0;
       if (musicPlayer.classList.contains('is-dragging')) {
         musicPlayer.classList.remove('is-dragging');
-        if (event.type === 'pointerup') suppressPlaylistClick = true;
-        saveMusicPlayerPosition();
+        if (dragHasMoved) {
+          if (event.type === 'pointerup') suppressPlaylistClick = true;
+          saveMusicPlayerPosition();
+        }
       }
       activeDragPointer = null;
+      dragHasMoved = false;
+      positionMusicCoachmark();
     }
 
     playlistToggle.addEventListener('pointerup', stopMusicPlayerDrag);
     playlistToggle.addEventListener('pointercancel', stopMusicPlayerDrag);
     playlistToggle.addEventListener('lostpointercapture', stopMusicPlayerDrag);
+    window.addEventListener('pointerup', stopMusicPlayerDrag);
+    window.addEventListener('pointercancel', stopMusicPlayerDrag);
     playlistToggle.addEventListener('click', function (event) {
       if (!suppressPlaylistClick) return;
       event.preventDefault();
@@ -1640,16 +1732,20 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
         }
       }
       if (!playlistPanel.hidden) positionPlaylistPanel();
+      positionMusicCoachmark();
     });
 
     function updateMusicPlayer() {
       const track = playlist[currentTrackIndex];
       const isPlaying = !loveSong.paused;
       currentTrackTitle.textContent = track.title;
-      playerStatus.textContent = isPlaying ? 'Now playing' : 'Paused';
+      playerStatus.textContent = musicUnlocked ? (isPlaying ? 'Now playing' : 'Paused') : 'Login to play';
       playbackToggle.textContent = isPlaying ? 'Pause' : 'Play';
-      playbackToggle.setAttribute('aria-label', `${isPlaying ? 'Pause' : 'Play'} ${track.title}`);
-      playlistToggle.setAttribute('aria-label', `${isPlaying ? 'Now playing' : 'Paused'} ${track.title}. Open playlist. Hold to move.`);
+      playbackToggle.disabled = !musicUnlocked;
+      playbackToggle.setAttribute('aria-label', musicUnlocked
+        ? `${isPlaying ? 'Pause' : 'Play'} ${track.title}`
+        : `Log in to play ${track.title}`);
+      playlistToggle.setAttribute('aria-label', `${musicUnlocked ? (isPlaying ? 'Now playing' : 'Paused') : 'Music preview'} ${track.title}. Open playlist. Hold to move.`);
       playlistTracks.forEach((button, index) => {
         button.setAttribute('aria-current', String(index === currentTrackIndex));
       });
@@ -1682,10 +1778,17 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       playlistPanel.hidden = !playlistPanel.hidden;
       playlistToggle.setAttribute('aria-expanded', String(!playlistPanel.hidden));
       musicPlayer.classList.toggle('is-expanded', !playlistPanel.hidden);
-      if (!playlistPanel.hidden) positionPlaylistPanel();
+      if (!playlistPanel.hidden) {
+        positionPlaylistPanel();
+        musicCoachmark.hidden = true;
+      }
     });
 
     playbackToggle.addEventListener('click', function () {
+      if (!musicUnlocked) {
+        playerStatus.textContent = 'Login to play';
+        return;
+      }
       if (loveSong.paused) {
         playLoveSong();
       } else {
@@ -1696,7 +1799,7 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
 
     playlistTracks.forEach(function (button) {
       button.addEventListener('click', function () {
-        selectPlaylistTrack(Number(button.dataset.trackIndex), true);
+        selectPlaylistTrack(Number(button.dataset.trackIndex), musicUnlocked);
       });
     });
 
@@ -1848,7 +1951,9 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       restoreMusicPlayerPosition();
       playlistPanel.hidden = true;
       playlistToggle.setAttribute('aria-expanded', 'false');
+      musicUnlocked = true;
       selectPlaylistTrack(0, true);
+      showMusicCoachmark('Hold and drag the music circle to move it.');
       showScreen(storyScreen);
     }
 
