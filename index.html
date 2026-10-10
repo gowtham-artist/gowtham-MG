@@ -1738,11 +1738,10 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       dragHoldTimer = window.setTimeout(function () {
         holdActivated = true;
         musicPlayer.classList.add('is-dragging');
-        playlistToggle.setPointerCapture(event.pointerId);
       }, playerHoldDuration);
     });
 
-    playlistToggle.addEventListener('pointermove', function (event) {
+    window.addEventListener('pointermove', function (event) {
       if (activeDragPointer !== event.pointerId || !musicPlayer.classList.contains('is-dragging')) return;
       event.preventDefault();
       const position = setMusicPlayerPosition(event.clientX - dragOffsetX, event.clientY - dragOffsetY);
