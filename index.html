@@ -1606,7 +1606,7 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
     let suppressPlaylistClick = false;
     const musicPlayerPositionKey = 'loveStoryMusicPlayerPosition';
     const playerHoldDuration = 2000;
-    const tutorialReminderDelay = 3000;
+    const tutorialReminderDelay = 2000;
 
     function clampMusicPlayerPosition(left, top) {
       const margin = 12;
@@ -1654,6 +1654,7 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
         moveReminderTimer = 0;
         if (!completedPlayerMove && playlistPanel.hidden) {
           showMusicCoachmark(`Hold the music circle for ${playerHoldDuration / 1000} seconds, then move it.`);
+          scheduleMoveReminder();
         }
       }, tutorialReminderDelay);
     }
@@ -1664,7 +1665,7 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       window.clearTimeout(tapReminderTimer);
       tapReminderTimer = window.setTimeout(function () {
         tapReminderTimer = 0;
-        if (!completedPlaylistTap) showMusicCoachmark('Tap the music circle to choose a song.');
+        if (!completedPlaylistTap) remindToTapPlaylist();
       }, tutorialReminderDelay);
     }
 
@@ -1758,7 +1759,7 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       if (musicPlayer.classList.contains('is-dragging')) {
         musicPlayer.classList.remove('is-dragging');
       }
-      if (holdActivated && event.type === 'pointerup') suppressPlaylistClick = true;
+      if (completedMove) suppressPlaylistClick = true;
       if (completedMove) {
         completedPlayerMove = true;
         window.clearTimeout(moveReminderTimer);
@@ -1843,8 +1844,9 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       playlistToggle.setAttribute('aria-expanded', String(!playlistPanel.hidden));
       musicPlayer.classList.toggle('is-expanded', !playlistPanel.hidden);
       if (!playlistPanel.hidden) {
-        completePlaylistTap();
-        if (!completedPlayerMove) {
+        if (completedPlayerMove) {
+          completePlaylistTap();
+        } else {
           window.clearTimeout(moveReminderTimer);
           moveReminderTimer = 0;
         }
@@ -1869,7 +1871,7 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
 
     playlistTracks.forEach(function (button) {
       button.addEventListener('click', function () {
-        completePlaylistTap();
+        if (completedPlayerMove) completePlaylistTap();
         selectPlaylistTrack(Number(button.dataset.trackIndex), musicUnlocked);
       });
     });
@@ -2026,8 +2028,8 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       completedPlayerMove = false;
       completedPlaylistTap = false;
       selectPlaylistTrack(0, true);
-      musicCoachmark.hidden = true;
       showScreen(storyScreen);
+      showMusicCoachmark(`Hold the music circle for ${playerHoldDuration / 1000} seconds, then move it.`);
       scheduleMoveReminder();
     }
 
