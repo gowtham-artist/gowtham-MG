@@ -1031,6 +1031,16 @@
       pointer-events: none;
     }
 
+    .music-coachmark.is-popping {
+      animation: musicCoachmarkPop 0.3s ease-out both;
+      transform-origin: center bottom;
+    }
+
+    @keyframes musicCoachmarkPop {
+      from { opacity: 0; transform: translateY(6px) scale(0.92); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
     .music-coachmark[hidden] {
       display: none;
     }
@@ -1364,7 +1374,8 @@
 
     @media (prefers-reduced-motion: reduce) {
       .music-player.is-dragging,
-      .music-player.is-dragging::after {
+      .music-player.is-dragging::after,
+      .music-coachmark.is-popping {
         animation: none;
       }
 
@@ -1621,7 +1632,10 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
     function showMusicCoachmark(message) {
       musicCoachmark.textContent = message;
       musicCoachmark.hidden = false;
+      musicCoachmark.classList.remove('is-popping');
       positionMusicCoachmark();
+      void musicCoachmark.offsetWidth;
+      musicCoachmark.classList.add('is-popping');
     }
 
     function positionMusicCoachmark() {
@@ -1689,9 +1703,7 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       const position = setMusicPlayerPosition(event.clientX - dragOffsetX, event.clientY - dragOffsetY);
       if (!dragHasMoved && Math.hypot(position.left - dragOriginLeft, position.top - dragOriginTop) >= 8) {
         dragHasMoved = true;
-        showMusicCoachmark('Tap the music circle, then choose a song from the playlist.');
       }
-      if (dragHasMoved) positionMusicCoachmark();
     });
 
     function stopMusicPlayerDrag(event) {
@@ -1703,6 +1715,9 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
         if (dragHasMoved) {
           if (event.type === 'pointerup') suppressPlaylistClick = true;
           saveMusicPlayerPosition();
+          if (event.type === 'pointerup') {
+            showMusicCoachmark('Tap the music circle to choose a song.');
+          }
         }
       }
       activeDragPointer = null;
@@ -1953,7 +1968,7 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       playlistToggle.setAttribute('aria-expanded', 'false');
       musicUnlocked = true;
       selectPlaylistTrack(0, true);
-      showMusicCoachmark('Hold and drag the music circle to move it.');
+      musicCoachmark.hidden = true;
       showScreen(storyScreen);
     }
 
