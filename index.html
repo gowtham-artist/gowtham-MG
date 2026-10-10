@@ -1239,8 +1239,8 @@ Be safe thanks for everything.. 💖</div>
     <div class="floating-butterflies" id="floatingButterflies"></div>
   </div>
 
-  <audio id="loveSong" loop>
-    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_4de7251b7d.mp3?filename=love-story-12817.mp3" type="audio/mpeg" />
+  <audio id="loveSong" loop preload="auto">
+    <source src="Pesamale.mp3" type="audio/mpeg" />
   </audio>
 
   <script>
@@ -1259,6 +1259,22 @@ Be safe thanks for everything.. 💖</div>
     const letterContent = document.getElementById('letterContent');
     const letterBack = document.getElementById('letterBack');
     const loveSong = document.getElementById('loveSong');
+    function playLoveSong() {
+      loveSong.play().catch(function (error) {
+        if (error.name === 'NotAllowedError') {
+          const retryPlayback = function () {
+            document.removeEventListener('pointerdown', retryPlayback);
+            document.removeEventListener('keydown', retryPlayback);
+            playLoveSong();
+          };
+          document.addEventListener('pointerdown', retryPlayback, { once: true });
+          document.addEventListener('keydown', retryPlayback, { once: true });
+          return;
+        }
+
+        console.error('Unable to play Pesamale.mp3:', error);
+      });
+    }
     const photoStage = document.querySelector('.message-panel');
     const keyStage = document.getElementById('keyStage');
     const birthdayStage = document.getElementById('birthdayStage');
@@ -1301,23 +1317,6 @@ Be safe thanks for everything.. 💖</div>
       item.style.setProperty('--fly-distance-35', `-${Math.ceil(flyDistance * 0.35)}px`);
       item.style.setProperty('--fly-distance-70', `-${Math.ceil(flyDistance * 0.7)}px`);
       item.style.setProperty('--fly-distance', `-${flyDistance}px`);
-
-      item.addEventListener('animationend', function () {
-        item.remove();
-      }, { once: true });
-      floatingButterflies.appendChild(item);
-    }
-
-    function addFlyingEmoji(className, emoji) {
-      if (floatingButterflies.childElementCount >= maxFlyingItems) {
-        floatingButterflies.firstElementChild.remove();
-      }
-
-      const item = document.createElement('span');
-      item.className = className;
-      item.textContent = emoji;
-      item.style.left = (Math.random() * 80 + 10) + '%';
-      item.style.top = (Math.random() * 45 + 20) + '%';
 
       item.addEventListener('animationend', function () {
         item.remove();
@@ -1388,6 +1387,7 @@ Be safe thanks for everything.. 💖</div>
       }
 
       loginError.hidden = true;
+      playLoveSong();
       showScreen(storyScreen);
     }
 
@@ -1416,7 +1416,6 @@ Be safe thanks for everything.. 💖</div>
         setTimeout(() => {
           showScreen(finalScreen);
           finalScreen.classList.add('active');
-          loveSong.play();
         }, 300);
       } else {
         progressResetTimeout = setTimeout(() => {
