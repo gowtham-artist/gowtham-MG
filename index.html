@@ -857,16 +857,36 @@
       position: fixed;
       right: max(12px, env(safe-area-inset-right));
       bottom: max(12px, env(safe-area-inset-bottom));
-      z-index: 15;
-      width: min(250px, calc(100vw - 24px));
-      padding: 6px;
+      z-index: 40;
+      width: 58px;
+      height: 58px;
+      padding: 4px;
       border: 1px solid rgba(255,255,255,0.14);
-      border-radius: 18px;
+      border-radius: 50%;
       background: rgba(34, 16, 30, 0.92);
       box-shadow: 0 8px 26px rgba(0,0,0,0.28);
       color: var(--text);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
+      touch-action: none;
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .music-player.is-dragging {
+      box-shadow: 0 10px 32px rgba(255,143,189,0.42);
+      transform: scale(1.06);
+      transition: none;
     }
 
     .music-player[hidden],
@@ -877,7 +897,9 @@
     .mini-player {
       display: flex;
       align-items: center;
-      gap: 6px;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
     }
 
     .playlist-toggle,
@@ -894,26 +916,24 @@
 
     .playlist-toggle {
       display: flex;
-      flex: 1;
-      min-width: 0;
+      width: 100%;
+      height: 100%;
       align-items: center;
-      gap: 9px;
-      padding: 4px 8px;
-      text-align: left;
+      justify-content: center;
+      padding: 0;
+      border-radius: 50%;
+      touch-action: none;
     }
 
     .music-note {
       flex: none;
       color: #ff9bc6;
-      font-size: 1.35rem;
+      font-size: 1.65rem;
       line-height: 1;
     }
 
     .track-label {
-      display: grid;
-      flex: 1;
-      min-width: 0;
-      gap: 2px;
+      display: none;
     }
 
     .track-caption {
@@ -930,36 +950,64 @@
     }
 
     .playlist-chevron {
-      flex: none;
-      width: 8px;
-      height: 8px;
-      margin: 0 3px 4px 0;
-      border-right: 1.5px solid rgba(255,241,247,0.72);
-      border-bottom: 1.5px solid rgba(255,241,247,0.72);
-      transform: rotate(45deg);
-      transition: transform 0.2s ease, margin 0.2s ease;
+      display: none;
     }
 
-    .playlist-toggle[aria-expanded="true"] .playlist-chevron {
-      margin-bottom: 0;
-      transform: rotate(225deg);
+    .playlist-toggle:focus-visible,
+    .playback-toggle:focus-visible,
+    .playlist-track:focus-visible {
+      outline: 2px solid #ff9bc6;
+      outline-offset: 2px;
     }
 
     .playback-toggle {
-      flex: none;
-      min-width: 40px;
-      padding: 0 9px;
+      min-height: 40px;
+      padding: 0 12px;
+      border-radius: 12px;
       background: rgba(255,143,189,0.16);
       color: #ffd7ec;
       font-size: 0.8rem;
     }
 
     .playlist-panel {
-      padding: 5px 4px 2px;
+      position: absolute;
+      right: 0;
+      bottom: calc(100% + 8px);
+      display: grid;
+      width: min(250px, calc(100vw - 24px));
+      gap: 6px;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 18px;
+      background: rgba(34, 16, 30, 0.96);
+      box-shadow: 0 8px 26px rgba(0,0,0,0.28);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .music-player.menu-opens-below .playlist-panel {
+      top: calc(100% + 8px);
+      bottom: auto;
+    }
+
+    .playlist-player-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 0 4px 6px;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .playlist-player-controls .track-label {
+      display: grid;
+      flex: 1;
+      min-width: 0;
+      gap: 2px;
     }
 
     .playlist-heading {
-      margin: 4px 8px 6px;
+      margin: 3px 4px 0;
       color: rgba(255,241,247,0.6);
       font: 0.65rem "Playfair Display", serif;
       letter-spacing: 0.08em;
@@ -1425,15 +1473,17 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
     <div class="mini-player">
       <button id="playlistToggle" class="playlist-toggle" type="button" aria-expanded="false" aria-controls="playlistPanel">
         <span class="music-note" aria-hidden="true">♫</span>
+        <span class="visually-hidden">Open music playlist</span>
+      </button>
+    </div>
+    <div id="playlistPanel" class="playlist-panel" hidden>
+      <div class="playlist-player-controls">
         <span class="track-label">
           <span id="playerStatus" class="track-caption" aria-live="polite">Paused</span>
           <span id="currentTrackTitle" class="current-track-title">Pesamale</span>
         </span>
-        <span class="playlist-chevron" aria-hidden="true"></span>
-      </button>
-      <button id="playbackToggle" class="playback-toggle" type="button" aria-label="Pause music">Pause</button>
-    </div>
-    <div id="playlistPanel" class="playlist-panel" hidden>
+        <button id="playbackToggle" class="playback-toggle" type="button" aria-label="Pause music">Pause</button>
+      </div>
       <p class="playlist-heading">Playlist</p>
       <div class="playlist-track-list">
         <button class="playlist-track" type="button" data-track-index="0" aria-current="true">Pesamale</button>
@@ -1475,6 +1525,122 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       { title: 'Radhimaa', source: 'Radhimaa.mp3' }
     ];
     let currentTrackIndex = 0;
+    let dragHoldTimer = 0;
+    let activeDragPointer = null;
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
+    let suppressPlaylistClick = false;
+    const musicPlayerPositionKey = 'loveStoryMusicPlayerPosition';
+
+    function clampMusicPlayerPosition(left, top) {
+      const margin = 12;
+      return {
+        left: Math.max(margin, Math.min(left, window.innerWidth - musicPlayer.offsetWidth - margin)),
+        top: Math.max(margin, Math.min(top, window.innerHeight - musicPlayer.offsetHeight - margin))
+      };
+    }
+
+    function setMusicPlayerPosition(left, top) {
+      const position = clampMusicPlayerPosition(left, top);
+      musicPlayer.style.left = `${position.left}px`;
+      musicPlayer.style.top = `${position.top}px`;
+      musicPlayer.style.right = 'auto';
+      musicPlayer.style.bottom = 'auto';
+      return position;
+    }
+
+    function positionPlaylistPanel() {
+      const playerRect = musicPlayer.getBoundingClientRect();
+      const panelWidth = playlistPanel.offsetWidth;
+      const panelHeight = playlistPanel.offsetHeight;
+      const left = Math.max(12, Math.min(
+        playerRect.left + (playerRect.width - panelWidth) / 2,
+        window.innerWidth - panelWidth - 12
+      ));
+      playlistPanel.style.left = `${left - playerRect.left}px`;
+      playlistPanel.style.right = 'auto';
+      musicPlayer.classList.toggle('menu-opens-below', playerRect.top < panelHeight + 24);
+    }
+
+    function restoreMusicPlayerPosition() {
+      try {
+        const storedPosition = localStorage.getItem(musicPlayerPositionKey);
+        if (!storedPosition) return;
+        const position = JSON.parse(storedPosition);
+        if (!Number.isFinite(position.left) || !Number.isFinite(position.top)) {
+          localStorage.removeItem(musicPlayerPositionKey);
+          console.warn('Saved music player position was invalid and has been cleared.');
+          return;
+        }
+        setMusicPlayerPosition(position.left, position.top);
+      } catch (error) {
+        console.error('Unable to restore the saved music player position:', error);
+      }
+    }
+
+    function saveMusicPlayerPosition() {
+      const position = {
+        left: musicPlayer.offsetLeft,
+        top: musicPlayer.offsetTop
+      };
+      try {
+        localStorage.setItem(musicPlayerPositionKey, JSON.stringify(position));
+      } catch (error) {
+        console.error('Unable to save the music player position:', error);
+      }
+    }
+
+    playlistToggle.addEventListener('pointerdown', function (event) {
+      if (event.button !== 0) return;
+      const playerRect = musicPlayer.getBoundingClientRect();
+      dragOffsetX = event.clientX - playerRect.left;
+      dragOffsetY = event.clientY - playerRect.top;
+      activeDragPointer = event.pointerId;
+      dragHoldTimer = window.setTimeout(function () {
+        musicPlayer.classList.add('is-dragging');
+        playlistToggle.setPointerCapture(event.pointerId);
+      }, 450);
+    });
+
+    playlistToggle.addEventListener('pointermove', function (event) {
+      if (activeDragPointer !== event.pointerId || !musicPlayer.classList.contains('is-dragging')) return;
+      event.preventDefault();
+      setMusicPlayerPosition(event.clientX - dragOffsetX, event.clientY - dragOffsetY);
+    });
+
+    function stopMusicPlayerDrag(event) {
+      if (activeDragPointer !== event.pointerId) return;
+      window.clearTimeout(dragHoldTimer);
+      dragHoldTimer = 0;
+      if (musicPlayer.classList.contains('is-dragging')) {
+        musicPlayer.classList.remove('is-dragging');
+        if (event.type === 'pointerup') suppressPlaylistClick = true;
+        saveMusicPlayerPosition();
+      }
+      activeDragPointer = null;
+    }
+
+    playlistToggle.addEventListener('pointerup', stopMusicPlayerDrag);
+    playlistToggle.addEventListener('pointercancel', stopMusicPlayerDrag);
+    playlistToggle.addEventListener('lostpointercapture', stopMusicPlayerDrag);
+    playlistToggle.addEventListener('click', function (event) {
+      if (!suppressPlaylistClick) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      suppressPlaylistClick = false;
+    }, true);
+
+    window.addEventListener('resize', function () {
+      if (musicPlayer.style.left) {
+        const position = setMusicPlayerPosition(musicPlayer.offsetLeft, musicPlayer.offsetTop);
+        try {
+          localStorage.setItem(musicPlayerPositionKey, JSON.stringify(position));
+        } catch (error) {
+          console.error('Unable to save the resized music player position:', error);
+        }
+      }
+      if (!playlistPanel.hidden) positionPlaylistPanel();
+    });
 
     function updateMusicPlayer() {
       const track = playlist[currentTrackIndex];
@@ -1483,6 +1649,7 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       playerStatus.textContent = isPlaying ? 'Now playing' : 'Paused';
       playbackToggle.textContent = isPlaying ? 'Pause' : 'Play';
       playbackToggle.setAttribute('aria-label', `${isPlaying ? 'Pause' : 'Play'} ${track.title}`);
+      playlistToggle.setAttribute('aria-label', `${isPlaying ? 'Now playing' : 'Paused'} ${track.title}. Open playlist. Hold to move.`);
       playlistTracks.forEach((button, index) => {
         button.setAttribute('aria-current', String(index === currentTrackIndex));
       });
@@ -1514,6 +1681,8 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
     playlistToggle.addEventListener('click', function () {
       playlistPanel.hidden = !playlistPanel.hidden;
       playlistToggle.setAttribute('aria-expanded', String(!playlistPanel.hidden));
+      musicPlayer.classList.toggle('is-expanded', !playlistPanel.hidden);
+      if (!playlistPanel.hidden) positionPlaylistPanel();
     });
 
     playbackToggle.addEventListener('click', function () {
@@ -1676,6 +1845,7 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
 
       loginError.hidden = true;
       musicPlayer.hidden = false;
+      restoreMusicPlayerPosition();
       playlistPanel.hidden = true;
       playlistToggle.setAttribute('aria-expanded', 'false');
       selectPlaylistTrack(0, true);
