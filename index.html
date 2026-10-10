@@ -853,20 +853,134 @@
       white-space: pre-line;
     }
 
-    .song-tag {
+    .music-player {
       position: fixed;
-      bottom: 18px;
-      left: 22px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      color: #FFEAF4;
-      border-radius: 999px;
-      padding: 8px 14px;
-      letter-spacing: 0.08em;
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      backdrop-filter: blur(8px);
+      right: max(12px, env(safe-area-inset-right));
+      bottom: max(12px, env(safe-area-inset-bottom));
       z-index: 15;
+      width: min(250px, calc(100vw - 24px));
+      padding: 6px;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 18px;
+      background: rgba(34, 16, 30, 0.92);
+      box-shadow: 0 8px 26px rgba(0,0,0,0.28);
+      color: var(--text);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .music-player[hidden],
+    .playlist-panel[hidden] {
+      display: none;
+    }
+
+    .mini-player {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .playlist-toggle,
+    .playback-toggle,
+    .playlist-track {
+      min-height: 40px;
+      border: 0;
+      border-radius: 12px;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .playlist-toggle {
+      display: flex;
+      flex: 1;
+      min-width: 0;
+      align-items: center;
+      gap: 9px;
+      padding: 4px 8px;
+      text-align: left;
+    }
+
+    .music-note {
+      flex: none;
+      color: #ff9bc6;
+      font-size: 1.35rem;
+      line-height: 1;
+    }
+
+    .track-label {
+      display: grid;
+      flex: 1;
+      min-width: 0;
+      gap: 2px;
+    }
+
+    .track-caption {
+      color: rgba(255,241,247,0.58);
+      font: 0.62rem "Playfair Display", serif;
+      letter-spacing: 0.04em;
+    }
+
+    .current-track-title {
+      overflow: hidden;
+      font: 0.78rem "Playfair Display", serif;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .playlist-chevron {
+      flex: none;
+      width: 8px;
+      height: 8px;
+      margin: 0 3px 4px 0;
+      border-right: 1.5px solid rgba(255,241,247,0.72);
+      border-bottom: 1.5px solid rgba(255,241,247,0.72);
+      transform: rotate(45deg);
+      transition: transform 0.2s ease, margin 0.2s ease;
+    }
+
+    .playlist-toggle[aria-expanded="true"] .playlist-chevron {
+      margin-bottom: 0;
+      transform: rotate(225deg);
+    }
+
+    .playback-toggle {
+      flex: none;
+      min-width: 40px;
+      padding: 0 9px;
+      background: rgba(255,143,189,0.16);
+      color: #ffd7ec;
+      font-size: 0.8rem;
+    }
+
+    .playlist-panel {
+      padding: 5px 4px 2px;
+    }
+
+    .playlist-heading {
+      margin: 4px 8px 6px;
+      color: rgba(255,241,247,0.6);
+      font: 0.65rem "Playfair Display", serif;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .playlist-track-list {
+      display: grid;
+      gap: 3px;
+    }
+
+    .playlist-track {
+      width: 100%;
+      padding: 7px 10px;
+      text-align: left;
+      font-size: 0.78rem;
+    }
+
+    .playlist-track[aria-current="true"] {
+      background: rgba(255,143,189,0.16);
+      color: #ffd7ec;
     }
 
     .heart-burst-layer {
@@ -1123,9 +1237,6 @@
         padding: 20px 18px;
       }
 
-      .song-tag {
-        display: none;
-      }
     }
 
     @media (max-height: 620px) {
@@ -1186,7 +1297,9 @@
 
     @media (hover: none) and (pointer: coarse) {
       .screen,
-      .screen * {
+      .screen *,
+      .music-player,
+      .music-player * {
         -webkit-touch-callout: none;
         -webkit-tap-highlight-color: transparent;
         -webkit-user-select: none;
@@ -1308,14 +1421,31 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
     </div>
   </div>
 
-  <div class="song-tag">Romantic Playlist</div>
+  <div id="musicPlayer" class="music-player" hidden>
+    <div class="mini-player">
+      <button id="playlistToggle" class="playlist-toggle" type="button" aria-expanded="false" aria-controls="playlistPanel">
+        <span class="music-note" aria-hidden="true">♫</span>
+        <span class="track-label">
+          <span id="playerStatus" class="track-caption" aria-live="polite">Paused</span>
+          <span id="currentTrackTitle" class="current-track-title">Pesamale</span>
+        </span>
+        <span class="playlist-chevron" aria-hidden="true"></span>
+      </button>
+      <button id="playbackToggle" class="playback-toggle" type="button" aria-label="Pause music">Pause</button>
+    </div>
+    <div id="playlistPanel" class="playlist-panel" hidden>
+      <p class="playlist-heading">Playlist</p>
+      <div class="playlist-track-list">
+        <button class="playlist-track" type="button" data-track-index="0" aria-current="true">Pesamale</button>
+        <button class="playlist-track" type="button" data-track-index="1" aria-current="false">Radhimaa</button>
+      </div>
+    </div>
+  </div>
   <div id="heartBurstLayer" class="heart-burst-layer" aria-hidden="true">
     <div class="floating-butterflies" id="floatingButterflies"></div>
   </div>
 
-  <audio id="loveSong" loop preload="auto">
-    <source src="Pesamale.mp3" type="audio/mpeg" />
-  </audio>
+  <audio id="loveSong" preload="none"></audio>
 
   <script>
     const loginForm = document.getElementById('loginForm');
@@ -1333,22 +1463,87 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
     const letterContent = document.getElementById('letterContent');
     const letterBack = document.getElementById('letterBack');
     const loveSong = document.getElementById('loveSong');
-    function playLoveSong() {
-      loveSong.play().catch(function (error) {
-        if (error.name === 'NotAllowedError') {
-          const retryPlayback = function () {
-            document.removeEventListener('pointerdown', retryPlayback);
-            document.removeEventListener('keydown', retryPlayback);
-            playLoveSong();
-          };
-          document.addEventListener('pointerdown', retryPlayback, { once: true });
-          document.addEventListener('keydown', retryPlayback, { once: true });
-          return;
-        }
+    const musicPlayer = document.getElementById('musicPlayer');
+    const playlistToggle = document.getElementById('playlistToggle');
+    const playlistPanel = document.getElementById('playlistPanel');
+    const playerStatus = document.getElementById('playerStatus');
+    const currentTrackTitle = document.getElementById('currentTrackTitle');
+    const playbackToggle = document.getElementById('playbackToggle');
+    const playlistTracks = document.querySelectorAll('.playlist-track');
+    const playlist = [
+      { title: 'Pesamale', source: 'Pesamale.mp3' },
+      { title: 'Radhimaa', source: 'Radhimaa.mp3' }
+    ];
+    let currentTrackIndex = 0;
 
-        console.error('Unable to play Pesamale.mp3:', error);
+    function updateMusicPlayer() {
+      const track = playlist[currentTrackIndex];
+      const isPlaying = !loveSong.paused;
+      currentTrackTitle.textContent = track.title;
+      playerStatus.textContent = isPlaying ? 'Now playing' : 'Paused';
+      playbackToggle.textContent = isPlaying ? 'Pause' : 'Play';
+      playbackToggle.setAttribute('aria-label', `${isPlaying ? 'Pause' : 'Play'} ${track.title}`);
+      playlistTracks.forEach((button, index) => {
+        button.setAttribute('aria-current', String(index === currentTrackIndex));
       });
     }
+
+    function playLoveSong() {
+      const playback = loveSong.play();
+      if (playback) playback.catch(function (error) {
+        if (error.name === 'NotAllowedError') {
+          playerStatus.textContent = 'Tap Play to listen';
+          return;
+        }
+        console.error(`Unable to play ${playlist[currentTrackIndex].source}:`, error);
+      });
+    }
+
+    function selectPlaylistTrack(index, autoplay) {
+      if (!Number.isInteger(index) || index < 0 || index >= playlist.length) {
+        throw new RangeError(`Invalid playlist track index: ${index}`);
+      }
+
+      currentTrackIndex = index;
+      loveSong.src = playlist[index].source;
+      loveSong.load();
+      updateMusicPlayer();
+      if (autoplay) playLoveSong();
+    }
+
+    playlistToggle.addEventListener('click', function () {
+      playlistPanel.hidden = !playlistPanel.hidden;
+      playlistToggle.setAttribute('aria-expanded', String(!playlistPanel.hidden));
+    });
+
+    playbackToggle.addEventListener('click', function () {
+      if (loveSong.paused) {
+        playLoveSong();
+      } else {
+        loveSong.pause();
+      }
+      updateMusicPlayer();
+    });
+
+    playlistTracks.forEach(function (button) {
+      button.addEventListener('click', function () {
+        selectPlaylistTrack(Number(button.dataset.trackIndex), true);
+      });
+    });
+
+    loveSong.addEventListener('play', updateMusicPlayer);
+    loveSong.addEventListener('pause', updateMusicPlayer);
+    loveSong.addEventListener('ended', function () {
+      selectPlaylistTrack((currentTrackIndex + 1) % playlist.length, true);
+    });
+    loveSong.addEventListener('error', function () {
+      const error = loveSong.error;
+      if (error) {
+        playerStatus.textContent = 'Song unavailable';
+        console.error(`Unable to load ${playlist[currentTrackIndex].source}:`, error);
+      }
+    });
+
     const photoStage = document.querySelector('.message-panel');
     const keyStage = document.getElementById('keyStage');
     const birthdayStage = document.getElementById('birthdayStage');
@@ -1480,7 +1675,10 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       }
 
       loginError.hidden = true;
-      playLoveSong();
+      musicPlayer.hidden = false;
+      playlistPanel.hidden = true;
+      playlistToggle.setAttribute('aria-expanded', 'false');
+      selectPlaylistTrack(0, true);
       showScreen(storyScreen);
     }
 
