@@ -887,6 +887,7 @@
       box-shadow: 0 10px 32px rgba(255,143,189,0.42);
       animation: musicPlayerFly 0.55s ease-in-out infinite alternate;
       transition: box-shadow 0.2s ease;
+      will-change: left, top;
     }
 
     .music-player.is-holding {
@@ -1609,15 +1610,15 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
     let completedPlayerMove = false;
     let completedPlaylistTap = false;
     let suppressPlaylistClick = false;
+    let suppressPlaylistClickTimer = 0;
     const musicPlayerPositionKey = 'loveStoryMusicPlayerPosition';
     const playerHoldDuration = 2000;
     const tutorialReminderDelay = 2000;
 
     function clampMusicPlayerPosition(left, top) {
-      const margin = 12;
       return {
-        left: Math.max(margin, Math.min(left, window.innerWidth - musicPlayer.offsetWidth - margin)),
-        top: Math.max(margin, Math.min(top, window.innerHeight - musicPlayer.offsetHeight - margin))
+        left: Math.max(0, Math.min(left, window.innerWidth - musicPlayer.offsetWidth)),
+        top: Math.max(0, Math.min(top, window.innerHeight - musicPlayer.offsetHeight))
       };
     }
 
@@ -1724,57 +1725,69 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       }
     }
 
-    playlistToggle.addEventListener('pointerdown', function (event) {
-      if (event.button !== 0) return;
+    function beginMusicPlayerDrag(pointerId, clientX, clientY) {
       if (!completedPlayerMove) {
         window.clearTimeout(moveReminderTimer);
         moveReminderTimer = 0;
         musicCoachmark.hidden = true;
       }
       const playerRect = musicPlayer.getBoundingClientRect();
-      dragOffsetX = event.clientX - playerRect.left;
-      dragOffsetY = event.clientY - playerRect.top;
+      dragOffsetX = clientX - playerRect.left;
+      dragOffsetY = clientY - playerRect.top;
       const origin = clampMusicPlayerPosition(playerRect.left, playerRect.top);
       dragOriginLeft = origin.left;
       dragOriginTop = origin.top;
       dragHasMoved = false;
       holdActivated = false;
-      activeDragPointer = event.pointerId;
+      activeDragPointer = pointerId;
       musicPlayer.classList.add('is-holding');
       dragHoldTimer = window.setTimeout(function () {
         holdActivated = true;
         musicPlayer.classList.remove('is-holding');
         musicPlayer.classList.add('is-dragging');
-        musicPlayer.setPointerCapture(event.pointerId);
+        if (typeof pointerId === 'number' && playlistToggle.hasPointerCapture(pointerId)) return;
+        if (typeof pointerId === 'number') {
+          try {
+            playlistToggle.setPointerCapture(pointerId);
+          } catch (error) {
+            console.warn('Pointer capture was unavailable; continuing to track drag on the window.', error);
+          }
+        }
       }, playerHoldDuration);
-    });
+    }
 
-    window.addEventListener('pointermove', function (event) {
-      if (activeDragPointer !== event.pointerId || !musicPlayer.classList.contains('is-dragging')) return;
-      event.preventDefault();
-      const position = setMusicPlayerPosition(event.clientX - dragOffsetX, event.clientY - dragOffsetY);
+    function moveMusicPlayerDrag(pointerId, clientX, clientY, event) {
+      if (activeDragPointer !== pointerId || !musicPlayer.classList.contains('is-dragging')) return;
+      if (event) event.preventDefault();
+      const position = setMusicPlayerPosition(clientX - dragOffsetX, clientY - dragOffsetY);
       if (!dragHasMoved && Math.hypot(position.left - dragOriginLeft, position.top - dragOriginTop) >= 8) {
         dragHasMoved = true;
       }
-    });
+    }
 
-    function stopMusicPlayerDrag(event) {
-      if (activeDragPointer !== event.pointerId) return;
+    function finishMusicPlayerDrag(pointerId, cancelled) {
+      if (activeDragPointer !== pointerId) return;
       window.clearTimeout(dragHoldTimer);
       dragHoldTimer = 0;
-      const completedMove = event.type === 'pointerup' && holdActivated && dragHasMoved;
+      const completedMove = !cancelled && holdActivated && dragHasMoved;
       musicPlayer.classList.remove('is-holding');
       if (musicPlayer.classList.contains('is-dragging')) {
         musicPlayer.classList.remove('is-dragging');
       }
-      if (completedMove) suppressPlaylistClick = true;
+      if (completedMove) {
+        suppressPlaylistClick = true;
+        window.clearTimeout(suppressPlaylistClickTimer);
+        suppressPlaylistClickTimer = window.setTimeout(function () {
+          suppressPlaylistClick = false;
+        }, 500);
+      }
       if (completedMove) {
         completedPlayerMove = true;
         window.clearTimeout(moveReminderTimer);
         moveReminderTimer = 0;
         saveMusicPlayerPosition();
         remindToTapPlaylist();
-      } else if (!completedPlayerMove && event.type !== 'lostpointercapture') {
+      } else if (!completedPlayerMove && !cancelled) {
         scheduleMoveReminder();
       }
       activeDragPointer = null;
@@ -1783,18 +1796,58 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       positionMusicCoachmark();
     }
 
-    playlistToggle.addEventListener('pointerup', stopMusicPlayerDrag);
-    playlistToggle.addEventListener('pointercancel', stopMusicPlayerDrag);
-    musicPlayer.addEventListener('pointerup', stopMusicPlayerDrag);
-    musicPlayer.addEventListener('pointercancel', stopMusicPlayerDrag);
-    musicPlayer.addEventListener('lostpointercapture', stopMusicPlayerDrag);
-    window.addEventListener('pointerup', stopMusicPlayerDrag);
-    window.addEventListener('pointercancel', stopMusicPlayerDrag);
+    playlistToggle.addEventListener('pointerdown', function (event) {
+      if (event.pointerType === 'touch' || event.button !== 0) return;
+      beginMusicPlayerDrag(event.pointerId, event.clientX, event.clientY);
+    });
+
+    window.addEventListener('pointermove', function (event) {
+      if (event.pointerType === 'touch') return;
+      moveMusicPlayerDrag(event.pointerId, event.clientX, event.clientY, event);
+    });
+
+    window.addEventListener('pointerup', function (event) {
+      if (event.pointerType !== 'touch') finishMusicPlayerDrag(event.pointerId, false);
+    });
+    window.addEventListener('pointercancel', function (event) {
+      if (event.pointerType !== 'touch') finishMusicPlayerDrag(event.pointerId, true);
+    });
+
+    playlistToggle.addEventListener('touchstart', function (event) {
+      if (event.touches.length !== 1) return;
+      const touch = event.changedTouches[0];
+      beginMusicPlayerDrag(`touch-${touch.identifier}`, touch.clientX, touch.clientY);
+    }, { passive: true });
+
+    window.addEventListener('touchmove', function (event) {
+      if (typeof activeDragPointer !== 'string' || !activeDragPointer.startsWith('touch-')) return;
+      const identifier = Number(activeDragPointer.slice(6));
+      const touch = Array.from(event.touches).find(function (item) {
+        return item.identifier === identifier;
+      });
+      if (touch) moveMusicPlayerDrag(activeDragPointer, touch.clientX, touch.clientY, event);
+    }, { passive: false });
+
+    window.addEventListener('touchend', function (event) {
+      if (typeof activeDragPointer !== 'string' || !activeDragPointer.startsWith('touch-')) return;
+      const identifier = Number(activeDragPointer.slice(6));
+      const endedTouch = Array.from(event.changedTouches).some(function (touch) {
+        return touch.identifier === identifier;
+      });
+      if (endedTouch) finishMusicPlayerDrag(activeDragPointer, false);
+    }, { passive: true });
+
+    window.addEventListener('touchcancel', function () {
+      if (typeof activeDragPointer === 'string' && activeDragPointer.startsWith('touch-')) {
+        finishMusicPlayerDrag(activeDragPointer, true);
+      }
+    }, { passive: true });
     playlistToggle.addEventListener('click', function (event) {
       if (!suppressPlaylistClick) return;
       event.preventDefault();
       event.stopImmediatePropagation();
       suppressPlaylistClick = false;
+      window.clearTimeout(suppressPlaylistClickTimer);
     }, true);
 
     window.addEventListener('resize', function () {
