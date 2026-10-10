@@ -273,6 +273,21 @@
       touch-action: manipulation;
     }
 
+    .emoji-image {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      object-fit: contain;
+      vertical-align: -0.15em;
+      -webkit-user-drag: none;
+    }
+
+    .heart-button .emoji-image {
+      display: block;
+      width: 0.9em;
+      height: 0.9em;
+    }
+
     .heart-button:hover {
       transform: scale(1.06);
     }
@@ -299,7 +314,6 @@
 
     .floating-butterflies span {
       position: absolute;
-      font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
       font-size: 1.7rem;
       opacity: 0;
       will-change: transform, opacity;
@@ -309,22 +323,12 @@
       -webkit-touch-callout: none;
     }
 
-    .floating-butterflies .flying-black-heart {
-      font-size: 1.45rem;
-    }
-
-    .floating-butterflies .flying-red-heart {
-      font-size: 1.5rem;
+    .floating-butterflies .emoji-image {
+      display: block;
     }
 
     .heart-mark,
-    .notification-icon,
-    .stage-icon,
-    .locker-visual,
-    .letter-key,
-    .birthday-calendar,
     .unlock-scene {
-      font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
       -webkit-user-select: none;
       user-select: none;
       -webkit-touch-callout: none;
@@ -507,7 +511,11 @@
       border-radius: 14px;
       background: linear-gradient(145deg, #ffbed9, #e96da6);
       box-shadow: 0 3px 10px rgba(255, 105, 171, 0.3);
-      font-size: 1.2rem;
+    }
+
+    .notification-icon .emoji-image {
+      width: 1.7rem;
+      height: 1.7rem;
     }
 
     .notification-copy {
@@ -578,6 +586,10 @@
       font-size: clamp(4rem, 14vw, 6.5rem);
       line-height: 1;
       filter: drop-shadow(0 0 20px rgba(255, 157, 202, 0.4));
+    }
+
+    .stage-icon .emoji-image {
+      display: block;
     }
 
     .birthday-icon {
@@ -653,10 +665,40 @@
       border: 1px solid rgba(255, 182, 215, 0.42);
       border-radius: 16px;
       background: linear-gradient(135deg, rgba(255, 208, 229, 0.18), rgba(255,255,255,0.07));
-      color: #ffd1e5;
-      font-size: 1.35rem;
       cursor: pointer;
       touch-action: manipulation;
+    }
+
+    .calendar-icon {
+      position: relative;
+      display: block;
+      width: 22px;
+      height: 22px;
+      margin: auto;
+      border: 2px solid #ffd1e5;
+      border-radius: 4px;
+    }
+
+    .calendar-icon::before {
+      position: absolute;
+      top: 4px;
+      right: 0;
+      left: 0;
+      height: 4px;
+      border-top: 2px solid #ffd1e5;
+      border-bottom: 1px solid #ffd1e5;
+      content: "";
+    }
+
+    .calendar-icon::after {
+      position: absolute;
+      right: 3px;
+      bottom: 3px;
+      left: 3px;
+      height: 7px;
+      background-image: radial-gradient(circle, #ffd1e5 1px, transparent 1.5px);
+      background-size: 6px 6px;
+      content: "";
     }
 
     .birthday-date-picker {
@@ -726,6 +768,10 @@
       font-size: 5rem;
     }
 
+    .locker-visual .emoji-image {
+      display: block;
+    }
+
     #lockerStage:not([hidden]) .locker-visual {
       animation: lockerUnlockReveal 1s cubic-bezier(0.2, 0.75, 0.25, 1) both;
     }
@@ -735,6 +781,12 @@
       font-size: 2.8rem;
       transform: rotate(-35deg);
       filter: drop-shadow(0 0 12px rgba(255, 217, 139, 0.65));
+    }
+
+    .unlock-lock-image {
+      width: 72%;
+      height: 72%;
+      object-fit: contain;
     }
 
     .letter-content {
@@ -872,6 +924,11 @@
       opacity: 0;
       filter: drop-shadow(0 0 22px rgba(255, 102, 166, 0.85));
       animation: unlockHeartRise 2.1s ease-out both;
+    }
+
+    .unlock-heart .emoji-image,
+    .unlock-key .emoji-image {
+      display: block;
     }
 
     .unlock-locker-door {
@@ -1150,7 +1207,7 @@
     <form id="loginForm" class="login-card" novalidate>
       <div class="subhead">
         <span class="tagline">That journey Sealed with love..</span>
-        <span>da madhu mah</span><span class="heart-mark">🖤</span>
+        <span>da madhu mah</span><span class="heart-mark"><img class="emoji-image" src="black-heart_1f5a4.png" alt="" /></span>
       </div>
 
       <div class="field">
@@ -1170,13 +1227,13 @@
 
   <div id="storyScreen" class="screen story-screen">
     <div class="title">Our Beautiful Story</div>
-    <div class="subtitle-2">A cherished memory forever etched in the soul 🩵</div>
+    <div class="subtitle-2">A cherished memory forever etched in the soul <img class="emoji-image" src="light-blue-heart_1fa75.png" alt="" /></div>
     <div class="mini-text">With every beat, my heart keeps choosing you.</div>
     <div class="heart-game-wrap">
       <div class="meter-box">
         <div id="meterFill" class="meter-fill"></div>
       </div>
-      <button id="heartButton" class="heart-button" aria-label="Touch my heart" title="Touch my heart">❤</button>
+      <button id="heartButton" class="heart-button" aria-label="Touch my heart" title="Touch my heart"><img class="emoji-image" src="red-heart_2764-fe0f.png" alt="" /></button>
       <div id="percentage" class="percentage">0%</div>
     </div>
   </div>
@@ -1187,7 +1244,7 @@
         <button id="messageCard" class="message-card" type="button" aria-label="Press and hold to open the message">
           <img class="poster-photo" src="WhatsApp%20Image%202026-10-09%20at%2012.36.08%20AM.jpeg" alt="Madhu tattoo with a heart" draggable="false" />
           <div class="open-text" aria-hidden="true">
-            <span class="notification-icon">💌</span>
+            <span class="notification-icon"><img class="emoji-image" src="sparkling-heart_1f496.png" alt="" /></span>
             <span class="notification-copy">
               <span class="notification-title">Open My Heart</span>
               <span class="notification-hint">Hold</span>
@@ -1198,7 +1255,7 @@
       </div>
 
       <div id="keyStage" class="stage-screen" aria-live="polite" hidden>
-        <div class="stage-icon" aria-hidden="true">🗝️</div>
+        <div class="stage-icon" aria-hidden="true"><img class="emoji-image" src="old-key_1f5dd-fe0f.png" alt="" /></div>
         <h2 class="stage-title">A Key for You</h2>
         <p class="stage-description">You filled my heart with love. Claim your special key to open the locker.</p>
         <button id="claimKey" class="stage-action" type="button">Claim My Key</button>
@@ -1206,15 +1263,15 @@
       </div>
 
       <div id="birthdayStage" class="stage-screen" aria-live="polite" hidden>
-        <div class="stage-icon birthday-icon" aria-hidden="true">❤️</div>
+        <div class="stage-icon birthday-icon" aria-hidden="true"><img class="emoji-image" src="red-heart_2764-fe0f.png" alt="" /></div>
         <h2 class="stage-title">One Last Little Secret</h2>
         <p class="stage-description">Enter your date of birth to open your love locker.</p>
         <form id="birthdayForm" class="birthday-form">
-          <p class="birthday-prompt">Choose the day my heart remembers ♡</p>
+          <p class="birthday-prompt">Choose the day my heart remembers <img class="emoji-image" src="sparkling-heart_1f496.png" alt="" /></p>
           <label for="birthdayInput">Your special date</label>
           <div class="birthday-date-wrap">
             <input id="birthdayInput" name="birthday" type="text" inputmode="numeric" autocomplete="bday" placeholder="DD / MM / YYYY" maxlength="14" pattern="(0[1-9]|[12][0-9]|3[01]) / (0[1-9]|1[0-2]) / [0-9]{4}" required aria-describedby="birthdayError" />
-            <button id="birthdayCalendar" class="birthday-calendar" type="button" aria-label="Choose date from calendar">📅</button>
+            <button id="birthdayCalendar" class="birthday-calendar" type="button" aria-label="Choose date from calendar"><span class="calendar-icon" aria-hidden="true"></span></button>
             <input id="birthdayPicker" class="birthday-date-picker" type="date" min="1900-01-01" tabindex="-1" aria-hidden="true" />
           </div>
           <p id="birthdayError" class="birthday-error" role="alert" hidden>That date doesn't match. Please try again.</p>
@@ -1224,10 +1281,10 @@
       </div>
 
       <div id="lockerStage" class="stage-screen" aria-live="polite" hidden>
-        <div class="locker-visual" aria-hidden="true">🔐</div>
+        <div class="locker-visual" aria-hidden="true"><img class="emoji-image" src="locked-with-key_1f510.png" alt="" /></div>
         <h2 class="stage-title">A Little Love Locker</h2>
         <p class="stage-description">Your key is ready. Unlock your special message.</p>
-        <button id="unlockLocker" class="stage-action" type="button"><span class="letter-key" aria-hidden="true">🗝️</span> Unlock</button>
+        <button id="unlockLocker" class="stage-action" type="button"><span class="letter-key" aria-hidden="true"><img class="emoji-image" src="old-key_1f5dd-fe0f.png" alt="" /></span> Unlock</button>
         <button id="backToBirthday" class="stage-back" type="button">Back to birthday</button>
       </div>
 
@@ -1247,7 +1304,7 @@ You are not just someone I love; you are the person I choose, again and again, i
 I will keep choosing you, keeping you close in my heart, and loving you in every little way I can.
 
 I am Forever yours Bubuuuuu,
-Be safe thanks for everything.. 💖</div>
+Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="sparkling-heart_1f496.png" alt="" /></div>
     </div>
   </div>
 
@@ -1308,6 +1365,25 @@ Be safe thanks for everything.. 💖</div>
     const backToBirthday = document.getElementById('backToBirthday');
     const heartBurstLayer = document.getElementById('heartBurstLayer');
 
+    const emojiImageSources = {
+      '🦋': 'butterfly_1f98b.png',
+      '🖤': 'black-heart_1f5a4.png',
+      '❤️': 'red-heart_2764-fe0f.png'
+    };
+
+    function createEmojiImage(emoji) {
+      const source = emojiImageSources[emoji];
+      if (!source) throw new Error(`No image is configured for ${emoji}.`);
+
+      const image = document.createElement('img');
+      image.className = 'emoji-image';
+      image.src = source;
+      image.alt = '';
+      image.draggable = false;
+      image.setAttribute('aria-hidden', 'true');
+      return image;
+    }
+
     let progress = 0;
     let progressResetTimeout;
     let holdStartedAt = 0;
@@ -1326,7 +1402,7 @@ Be safe thanks for everything.. 💖</div>
 
       const item = document.createElement('span');
       item.className = className;
-      item.textContent = emoji;
+      item.appendChild(createEmojiImage(emoji));
       const heartBounds = heartButton.getBoundingClientRect();
       item.style.left = (heartBounds.left + heartBounds.width / 2 + (Math.random() * 80 - 40)) + 'px';
       item.style.top = (heartBounds.top + heartBounds.height / 2) + 'px';
@@ -1450,7 +1526,7 @@ Be safe thanks for everything.. 💖</div>
       const scene = document.createElement('div');
       scene.className = 'unlock-scene';
       scene.setAttribute('aria-hidden', 'true');
-      scene.innerHTML = '<div class="unlock-locker"><div class="unlock-locker-body"><span class="unlock-heart">❤️</span></div><div class="unlock-locker-door">🔒</div><span class="unlock-key">🗝️</span></div><span class="unlock-caption">A little love for you</span>';
+      scene.innerHTML = '<div class="unlock-locker"><div class="unlock-locker-body"><span class="unlock-heart"><img class="emoji-image" src="red-heart_2764-fe0f.png" alt="" /></span></div><div class="unlock-locker-door"><img class="emoji-image unlock-lock-image" src="locked-with-key_1f510.png" alt="" /></div><span class="unlock-key"><img class="emoji-image" src="old-key_1f5dd-fe0f.png" alt="" /></span></div><span class="unlock-caption">A little love for you</span>';
 
       let finished = false;
       let fallbackTimeout;
