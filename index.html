@@ -1592,14 +1592,21 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
     let currentTrackIndex = 0;
     let musicUnlocked = false;
     let dragHoldTimer = 0;
+    let moveReminderTimer = 0;
+    let tapReminderTimer = 0;
     let activeDragPointer = null;
     let dragOffsetX = 0;
     let dragOffsetY = 0;
     let dragOriginLeft = 0;
     let dragOriginTop = 0;
     let dragHasMoved = false;
+    let holdActivated = false;
+    let completedPlayerMove = false;
+    let completedPlaylistTap = false;
     let suppressPlaylistClick = false;
     const musicPlayerPositionKey = 'loveStoryMusicPlayerPosition';
+    const playerHoldDuration = 2000;
+    const tutorialReminderDelay = 3000;
 
     function clampMusicPlayerPosition(left, top) {
       const margin = 12;
@@ -1638,6 +1645,34 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       positionMusicCoachmark();
       void musicCoachmark.offsetWidth;
       musicCoachmark.classList.add('is-popping');
+    }
+
+    function scheduleMoveReminder() {
+      window.clearTimeout(moveReminderTimer);
+      if (!musicUnlocked || completedPlayerMove || !playlistPanel.hidden) return;
+      moveReminderTimer = window.setTimeout(function () {
+        moveReminderTimer = 0;
+        if (!completedPlayerMove && playlistPanel.hidden) {
+          showMusicCoachmark(`Hold the music circle for ${playerHoldDuration / 1000} seconds, then move it.`);
+        }
+      }, tutorialReminderDelay);
+    }
+
+    function remindToTapPlaylist() {
+      if (!musicUnlocked || completedPlaylistTap) return;
+      showMusicCoachmark('Tap the music circle to choose a song.');
+      window.clearTimeout(tapReminderTimer);
+      tapReminderTimer = window.setTimeout(function () {
+        tapReminderTimer = 0;
+        if (!completedPlaylistTap) showMusicCoachmark('Tap the music circle to choose a song.');
+      }, tutorialReminderDelay);
+    }
+
+    function completePlaylistTap() {
+      completedPlaylistTap = true;
+      window.clearTimeout(tapReminderTimer);
+      tapReminderTimer = 0;
+      musicCoachmark.hidden = true;
     }
 
     function positionMusicCoachmark() {
@@ -1685,6 +1720,11 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
 
     playlistToggle.addEventListener('pointerdown', function (event) {
       if (event.button !== 0) return;
+      if (!completedPlayerMove) {
+        window.clearTimeout(moveReminderTimer);
+        moveReminderTimer = 0;
+        musicCoachmark.hidden = true;
+      }
       const playerRect = musicPlayer.getBoundingClientRect();
       dragOffsetX = event.clientX - playerRect.left;
       dragOffsetY = event.clientY - playerRect.top;
@@ -1692,11 +1732,13 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       dragOriginLeft = origin.left;
       dragOriginTop = origin.top;
       dragHasMoved = false;
+      holdActivated = false;
       activeDragPointer = event.pointerId;
       dragHoldTimer = window.setTimeout(function () {
+        holdActivated = true;
         musicPlayer.classList.add('is-dragging');
         playlistToggle.setPointerCapture(event.pointerId);
-      }, 450);
+      }, playerHoldDuration);
     });
 
     playlistToggle.addEventListener('pointermove', function (event) {
@@ -1712,18 +1754,23 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       if (activeDragPointer !== event.pointerId) return;
       window.clearTimeout(dragHoldTimer);
       dragHoldTimer = 0;
+      const completedMove = event.type === 'pointerup' && holdActivated && dragHasMoved;
       if (musicPlayer.classList.contains('is-dragging')) {
         musicPlayer.classList.remove('is-dragging');
-        if (dragHasMoved) {
-          if (event.type === 'pointerup') suppressPlaylistClick = true;
-          saveMusicPlayerPosition();
-          if (event.type === 'pointerup') {
-            showMusicCoachmark('Tap the music circle to choose a song.');
-          }
-        }
+      }
+      if (holdActivated && event.type === 'pointerup') suppressPlaylistClick = true;
+      if (completedMove) {
+        completedPlayerMove = true;
+        window.clearTimeout(moveReminderTimer);
+        moveReminderTimer = 0;
+        saveMusicPlayerPosition();
+        remindToTapPlaylist();
+      } else if (!completedPlayerMove && event.type !== 'lostpointercapture') {
+        scheduleMoveReminder();
       }
       activeDragPointer = null;
       dragHasMoved = false;
+      holdActivated = false;
       positionMusicCoachmark();
     }
 
@@ -1796,8 +1843,14 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       playlistToggle.setAttribute('aria-expanded', String(!playlistPanel.hidden));
       musicPlayer.classList.toggle('is-expanded', !playlistPanel.hidden);
       if (!playlistPanel.hidden) {
+        completePlaylistTap();
+        if (!completedPlayerMove) {
+          window.clearTimeout(moveReminderTimer);
+          moveReminderTimer = 0;
+        }
         positionPlaylistPanel();
-        musicCoachmark.hidden = true;
+      } else if (!completedPlayerMove) {
+        scheduleMoveReminder();
       }
     });
 
@@ -1816,6 +1869,7 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
 
     playlistTracks.forEach(function (button) {
       button.addEventListener('click', function () {
+        completePlaylistTap();
         selectPlaylistTrack(Number(button.dataset.trackIndex), musicUnlocked);
       });
     });
@@ -1969,9 +2023,12 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       playlistPanel.hidden = true;
       playlistToggle.setAttribute('aria-expanded', 'false');
       musicUnlocked = true;
+      completedPlayerMove = false;
+      completedPlaylistTap = false;
       selectPlaylistTrack(0, true);
       musicCoachmark.hidden = true;
       showScreen(storyScreen);
+      scheduleMoveReminder();
     }
 
     loginForm.addEventListener('input', function () {
