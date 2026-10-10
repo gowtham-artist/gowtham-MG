@@ -889,6 +889,11 @@
       transition: box-shadow 0.2s ease;
     }
 
+    .music-player.is-holding {
+      box-shadow: 0 0 0 5px rgba(255,143,189,0.2), 0 8px 26px rgba(0,0,0,0.28);
+      transform: scale(1.08);
+    }
+
     .music-player.is-dragging::after {
       position: absolute;
       top: 6px;
@@ -1735,9 +1740,12 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       dragHasMoved = false;
       holdActivated = false;
       activeDragPointer = event.pointerId;
+      musicPlayer.classList.add('is-holding');
       dragHoldTimer = window.setTimeout(function () {
         holdActivated = true;
+        musicPlayer.classList.remove('is-holding');
         musicPlayer.classList.add('is-dragging');
+        musicPlayer.setPointerCapture(event.pointerId);
       }, playerHoldDuration);
     });
 
@@ -1755,6 +1763,7 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       window.clearTimeout(dragHoldTimer);
       dragHoldTimer = 0;
       const completedMove = event.type === 'pointerup' && holdActivated && dragHasMoved;
+      musicPlayer.classList.remove('is-holding');
       if (musicPlayer.classList.contains('is-dragging')) {
         musicPlayer.classList.remove('is-dragging');
       }
@@ -1776,7 +1785,9 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
 
     playlistToggle.addEventListener('pointerup', stopMusicPlayerDrag);
     playlistToggle.addEventListener('pointercancel', stopMusicPlayerDrag);
-    playlistToggle.addEventListener('lostpointercapture', stopMusicPlayerDrag);
+    musicPlayer.addEventListener('pointerup', stopMusicPlayerDrag);
+    musicPlayer.addEventListener('pointercancel', stopMusicPlayerDrag);
+    musicPlayer.addEventListener('lostpointercapture', stopMusicPlayerDrag);
     window.addEventListener('pointerup', stopMusicPlayerDrag);
     window.addEventListener('pointercancel', stopMusicPlayerDrag);
     playlistToggle.addEventListener('click', function (event) {
