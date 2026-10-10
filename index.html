@@ -1126,6 +1126,22 @@
         transform: none;
       }
     }
+
+    @media (hover: none) and (pointer: coarse) {
+      .screen,
+      .screen * {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+
+      .screen input,
+      .screen textarea,
+      .screen [contenteditable="true"] {
+        -webkit-user-select: text;
+        user-select: text;
+      }
+    }
   </style>
 </head>
 <body>
