@@ -1649,10 +1649,10 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
 
     function scheduleMoveReminder() {
       window.clearTimeout(moveReminderTimer);
-      if (!musicUnlocked || completedPlayerMove || !playlistPanel.hidden) return;
+      if (!musicUnlocked || completedPlayerMove) return;
       moveReminderTimer = window.setTimeout(function () {
         moveReminderTimer = 0;
-        if (!completedPlayerMove && playlistPanel.hidden) {
+        if (!completedPlayerMove) {
           showMusicCoachmark('Press and hold, then move it.');
           scheduleMoveReminder();
         }
@@ -1844,16 +1844,9 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       playlistToggle.setAttribute('aria-expanded', String(!playlistPanel.hidden));
       musicPlayer.classList.toggle('is-expanded', !playlistPanel.hidden);
       if (!playlistPanel.hidden) {
-        if (completedPlayerMove) {
-          completePlaylistTap();
-        } else {
-          window.clearTimeout(moveReminderTimer);
-          moveReminderTimer = 0;
-        }
         positionPlaylistPanel();
-      } else if (!completedPlayerMove) {
-        scheduleMoveReminder();
       }
+      if (!completedPlayerMove) scheduleMoveReminder();
     });
 
     playbackToggle.addEventListener('click', function () {
@@ -1871,7 +1864,12 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
 
     playlistTracks.forEach(function (button) {
       button.addEventListener('click', function () {
-        if (completedPlayerMove) completePlaylistTap();
+        if (completedPlayerMove) {
+          completePlaylistTap();
+        } else {
+          showMusicCoachmark('Press and hold, then move it.');
+          scheduleMoveReminder();
+        }
         selectPlaylistTrack(Number(button.dataset.trackIndex), musicUnlocked);
       });
     });
