@@ -959,7 +959,7 @@
     }
 
     .birthday-wish-box p {
-      margin: 0 0 16px 0;
+      margin: 0 0 12px 0;
       color: rgba(255, 246, 251, 0.92);
       font-family: "Cormorant Garamond", serif;
       font-size: 1.22rem;
@@ -968,6 +968,26 @@
 
     .birthday-wish-box p:last-child {
       margin-bottom: 0;
+    }
+
+    #noteOptionBox p {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    @media (orientation: landscape), (min-width: 680px) {
+      .letter-content.visible {
+        width: min(94vw, 980px);
+        max-width: 980px;
+        padding: 26px clamp(20px, 4vw, 38px);
+      }
+
+      #noteOptionBox.visible {
+        column-count: 2;
+        column-gap: 32px;
+        column-rule: 1px solid rgba(255, 198, 221, 0.2);
+        padding: 22px 26px;
+      }
     }
 
     .music-player {
@@ -1461,7 +1481,12 @@
       .letter-content.visible {
         max-height: none;
         overflow: visible;
-        padding: 20px 18px;
+        width: 100%;
+        padding: 18px 14px;
+      }
+
+      .birthday-wish-box {
+        padding: 16px 14px;
       }
 
     }
