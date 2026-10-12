@@ -2568,7 +2568,12 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       unlockLocker.focus();
     });
 
-    unlockLocker.addEventListener('click', openLetter);
+    function handleUnlock(event) {
+      if (event && event.type === 'touchend') event.preventDefault();
+      openLetter();
+    }
+    unlockLocker.addEventListener('click', handleUnlock);
+    unlockLocker.addEventListener('touchend', handleUnlock, { passive: false });
 
     backToPhoto.addEventListener('click', function () {
       keyStage.hidden = true;
@@ -2595,7 +2600,8 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       lockerStage.hidden = false;
     });
 
-    birthdayWishToggle.addEventListener('click', function () {
+    function toggleBirthdayWish(event) {
+      if (event && event.type === 'touchend') event.preventDefault();
       const shouldOpen = birthdayWishBox.hidden;
       birthdayWishBox.hidden = !shouldOpen;
       birthdayWishToggle.setAttribute('aria-expanded', String(shouldOpen));
@@ -2604,9 +2610,12 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       if (shouldOpen) {
         birthdayWishBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
-    });
+    }
+    birthdayWishToggle.addEventListener('click', toggleBirthdayWish);
+    birthdayWishToggle.addEventListener('touchend', toggleBirthdayWish, { passive: false });
 
-    noteOptionToggle.addEventListener('click', function () {
+    function toggleNoteOption(event) {
+      if (event && event.type === 'touchend') event.preventDefault();
       const shouldOpen = noteOptionBox.hidden;
       noteOptionBox.hidden = !shouldOpen;
       noteOptionToggle.setAttribute('aria-expanded', String(shouldOpen));
@@ -2615,7 +2624,9 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       if (shouldOpen) {
         noteOptionBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
-    });
+    }
+    noteOptionToggle.addEventListener('click', toggleNoteOption);
+    noteOptionToggle.addEventListener('touchend', toggleNoteOption, { passive: false });
 
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
     document.addEventListener('click', function () {
