@@ -350,13 +350,25 @@
 
     .message-screen {
       flex-direction: column;
-      padding: 24px 16px;
-      overflow-x: clip;
+      align-items: center;
+      justify-content: flex-start !important;
+      padding: max(24px, env(safe-area-inset-top)) 16px max(60px, env(safe-area-inset-bottom));
+      overflow-x: hidden !important;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
       touch-action: pan-y;
-      overscroll-behavior-x: none;
       background:
         radial-gradient(circle at top, rgba(255, 116, 174, 0.16), transparent 35%),
         linear-gradient(160deg, #100b11 0%, #1c0d19 45%, #2f1629 100%);
+    }
+
+    .message-screen.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start !important;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
     }
 
     .message-screen::before {
@@ -855,8 +867,11 @@
 
     .letter-options {
       margin-top: 22px;
+      margin-bottom: 40px;
       display: grid;
-      gap: 12px;
+      gap: 16px;
+      position: relative;
+      z-index: 5;
     }
 
     .birthday-option-btn {
@@ -867,11 +882,16 @@
       gap: 8px;
       border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 999px;
-      padding: 11px 18px;
+      padding: 12px 20px;
       background: linear-gradient(135deg, rgba(255, 167, 206, 0.18), rgba(255,255,255,0.06));
       color: #fff5fb;
       font: 600 0.98rem "Playfair Display", serif;
       cursor: pointer;
+      position: relative;
+      z-index: 5;
+      pointer-events: auto !important;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: rgba(255, 180, 217, 0.3);
       transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     }
 
@@ -2422,6 +2442,8 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
         scene.remove();
         letterContent.classList.add('visible');
         showScreen(messageScreen);
+        messageScreen.scrollTop = 0;
+        window.scrollTo(0, 0);
         letterBack.focus();
         unlockLocker.disabled = false;
       }
