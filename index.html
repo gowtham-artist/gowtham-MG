@@ -853,6 +853,89 @@
       white-space: pre-line;
     }
 
+    .letter-options {
+      margin-top: 22px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .birthday-option-btn {
+      justify-self: flex-start;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      padding: 11px 18px;
+      background: linear-gradient(135deg, rgba(255, 167, 206, 0.18), rgba(255,255,255,0.06));
+      color: #fff5fb;
+      font: 600 0.98rem "Playfair Display", serif;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .birthday-option-btn .inline-emoji {
+      width: 1.15em;
+      height: 1.15em;
+      flex: none;
+      filter: drop-shadow(0 0 8px rgba(255, 220, 118, 0.8));
+    }
+
+    .birthday-option-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(255, 135, 190, 0.18);
+      border-color: rgba(255, 198, 221, 0.45);
+    }
+
+    .birthday-option-btn[aria-expanded="true"] {
+      background: linear-gradient(135deg, rgba(255, 186, 218, 0.24), rgba(255,255,255,0.08));
+    }
+
+    .birthday-wish-box {
+      display: none;
+      padding: 18px 20px;
+      border: 1px solid rgba(255, 198, 221, 0.26);
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(255, 207, 231, 0.08), rgba(79, 29, 59, 0.46));
+      box-shadow: inset 0 1px rgba(255,255,255,0.08);
+    }
+
+    .birthday-wish-box.visible {
+      display: block;
+      animation: letterFadeIn 0.35s ease-out both;
+    }
+
+    .birthday-wish-box strong {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      color: #ffd9eb;
+      font-size: 1.2rem;
+      font-family: "Great Vibes", cursive;
+      font-weight: 400;
+    }
+
+    .birthday-wish-box strong .inline-emoji {
+      width: 1.2em;
+      height: 1.2em;
+      flex: none;
+      filter: drop-shadow(0 0 10px rgba(255, 164, 201, 0.9));
+    }
+
+    .birthday-wish-box p {
+      margin: 0 0 16px 0;
+      color: rgba(255, 246, 251, 0.92);
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.22rem;
+      line-height: 1.7;
+    }
+
+    .birthday-wish-box p:last-child {
+      margin-bottom: 0;
+    }
+
     .music-player {
       position: fixed;
       right: max(12px, env(safe-area-inset-right));
@@ -1342,7 +1425,8 @@
       }
 
       .letter-content.visible {
-        max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 32px);
+        max-height: none;
+        overflow: visible;
         padding: 20px 18px;
       }
 
@@ -1522,17 +1606,205 @@
   <div id="messageScreen" class="screen message-screen">
     <div id="letterContent" class="letter-content" aria-live="polite">
       <button id="letterBack" class="letter-back" type="button">← Back to locker</button>
-      <div class="letter-header">To My Love</div>
-      <div class="letter-body">Heyy Madhu,
+      <div class="letter-header">To love stroy da madhu mah</div>
+      <div class="letter-body">This is for you gurl,
 
-Every moment with you feels like a soft dream I never want to wake up from.
-You are my peace, my favorite smile, my calm after every storm, and the most beautiful chapter of my life.
-I love the way your laughter fills the room, the way your eyes make everything feel lighter, and the way your presence turns even ordinary days into unforgettable memories.
-You are not just someone I love; you are the person I choose, again and again, in every lifetime and every dream.
-I will keep choosing you, keeping you close in my heart, and loving you in every little way I can.
+ To the Most Beautiful Soul,
+
+There is something about you that words can never fully explain. Maybe it's your smile, your beautiful heart, or the way you make a simple moment feel special,da mah
+
+If beauty had a voice, it would sound like your laughter. If love had a face, I wonder if it would look a little like you,cute gurl❤️
+
+You deserve all the happiness in this world, because a heart as beautiful as yours deserves nothing less than a beautiful life.
+
+And if I could wish for one thing, it would be that you never forget how special you are, even on the days when the world fails to remind you.
+
+And if I could wish for just one thing, it would be that you never forget how special you are, even on the days when the world fails to remind you. I hope you always find reasons to smile, someone who understands your silence, and a love that makes you feel safe, valued, and truly special. 
 
 I am Forever yours Bubuuuuu,
 Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="sparkling-heart_1f496.png" alt="" /></div>
+
+      <div class="letter-options">
+        <button id="birthdayWishToggle" class="birthday-option-btn" type="button" aria-expanded="false" aria-controls="birthdayWishBox">
+          <span>Birthday Wishes</span>
+          <img class="emoji-image inline-emoji" src="sparkles_2728.png" alt="sparkles" />
+        </button>
+        <div id="birthdayWishBox" class="birthday-wish-box" hidden>
+          <strong>Happy Birthday, Madhu mah <img class="emoji-image inline-emoji" src="sparkling-heart_1f496.png" alt="sparkling heart" /></strong>
+          <p>Intha wishes unaku yappo varum nu enaku therla arlready idhu type panita,This is for you da Madhu mah,Have a greatest birthday da mah ,And may your smile always stay as beautiful as it is today and may life bring you all the happiness you truly deserve.Keep shining,keep smiling da,and always be the reason behind someones happiness,and again one wish da. Have a magical birthday !<img class="emoji-image inline-emoji" src="birthday-cake_1f382.png" alt="birthday cake" /><img class="emoji-image inline-emoji" src="balloon_1f388.png" alt="balloon" /><img class="emoji-image inline-emoji" src="party-popper_1f389.png" alt="party popper" /><img class="emoji-image inline-emoji" src="sparkles_2728.png" alt="sparkles" /> Un mela oru endless aana love ipa varaikum vachi iruke vachi irupen,But evlo dha problems vanthalum unna vittu mattum poga kudadhu nu dha strong ah iruntha yana adhu dha loveee. Yenakku yapavume nee mattum dha elamey nu nenachi valndha yana unna enaku avlo pudichadhu starting la nee katana love apdi irundhuchi serii anyway,Nalla sapdunga,Thoongunga,Rest edu...🫶🏻 And thanks for your memories da soft gurl <img class="emoji-image inline-emoji" src="face-holding-back-tears_1f979.png" alt="face holding back tears" /><img class="emoji-image inline-emoji" src="mending-heart_2764-fe0f-200d-1fa79.png" alt="mending heart" /></p>
+        </div>
+
+        <button id="noteOptionToggle" class="birthday-option-btn" type="button" aria-expanded="false" aria-controls="noteOptionBox">
+          <span>I didn't mean to hurt you with this message,Click here</span>
+        </button>
+        <div id="noteOptionBox" class="birthday-wish-box" hidden>
+          <p>Avan peru Gowtham.</p>
+
+          <p>Avan oru periya aal illa.</p>
+
+          <p>Aana avanukku periya kanavugal irundhuchu.</p>
+
+          <p>Avan innum vaazhkaiya purinjukira oru saadhaarana paiyan.</p>
+
+          <p>Computer Science padichaan.</p>
+
+          <p>Coding kathukkanum, website create pannanum, oru nalla velai kidaikkanum, kai niraiya sambadhikkanum, oru naal sondhamaa business pannanum nu aasapattaan.</p>
+
+          <p>Avanukku ellaame theriyum nu illa, aana theriyadhadhai thirumba thirumba kettu kathukka muyarchi pannaan.</p>
+
+          <p>Sila neram confuse aavaan, aana adhu avanoda azhagana gunam, yenendraal theriyalanaalum vittudama muyarchi pannuvaan.</p>
+
+          <p>Avanukku panam venum.</p>
+
+          <p>Aana panam mattum avanoda kanavu illa.</p>
+
+          <p>Veetla ellaraiyum nalla nilaiyukku kondu varanum, kudumbathukku perumaiya irukkanum, than kaalila nikka kathukkanum nu ninaichaan.</p>
+
+          <p>Chinna chinna vishayangalukkum thittam pottaan.</p>
+
+          <p>Velai, sambalam, semippu, udambu theththikkaradhu, future-la enna car vaanganum nu kooda yosichaan.</p>
+
+          <p>Avan innum vaazhkaiya muzhusaa aarambikkave illa, aana vaazhkaiyoda poruppugalai munnaadiye sumakka ninaichaan.</p>
+
+          <p>Aana avanoda manasula oru idam mattum romba valichittu irundhuchu, adhu avan nesicha oru ponnu.</p>
+
+          <p>Ava thirumbi varuvaala, rendu perum seruvaangala, kudumbathoda sammathathoda kalyanam pannikka mudiyuma nu avan manasukkul evvalavo kelvigal irundhuchu.</p>
+
+          <p>Ava vilagi ponaalum, block panninaalum, "ini mudinjiduchu" nu manasaala oththukka mudiyama thavichaan.</p>
+
+          <p>Avanukku avala thirumba paarkkanum-ngradhu mattum illa, avaloda serndhu oru vaazhkai vaazhanum nu aasai.</p>
+
+          <p>Ragasiyamaa illa, kudumbathoda aasirvaadhathoda vaazhanum nu ninaichaan.</p>
+
+          <p>Avan avaloda serndhu vaazha neraiya thittangal vachirundhaan.</p>
+
+          <p>Aval kitta ellaam solli, serndhu oru azhagana vaazhkaiya vaazha muyarchi pannaan.</p>
+
+          <p>Aval mela avvalavu paasam vachirundhaan.</p>
+
+          <p>Avaloda madiyil saanjukittu nimmathiya irukkanum nu aasai pattaan.</p>
+
+          <p>Avaloda vaazhndhaa evvalavu nalla irukkum nu ninaichaan.</p>
+
+          <p>Aana avanoda kovam dhan ellaathaiyum keduthurucho nu oru thavippu irundhudhu.</p>
+
+          <p>Avalum ivanai nesichaa, ivanai purinjikka muyarchi pannaa, aana ivanukku ellame udane nadakkanum-ngra oru thavippum aavalu irundhudhu.</p>
+
+          <p>Avanoda nenappu thappu kedaiyadhu, yenendraal aval mela avvalavu aalamaana kaadhal irundhuchu.</p>
+
+          <p>Adhu mattum dhaan avanoda periya kanavaave irundhuchu.</p>
+
+          <p>Sila neram avan nambikkaiya pidichukkuvaan.</p>
+
+          <p>Sila neram adhe nambikkai avanaiye kaayapaduthum.</p>
+
+          <p>Oru chinna message-ku artham theduvaan.</p>
+
+          <p>Oru chinna maatrathula kooda periya nambikkaiya paarppaan.</p>
+
+          <p>Adhu avanoda balamum dhaan, balaveenamum dhaan.</p>
+
+          <p>Yaaraiyaavadhu manasaara nesichuttaa, avangalai marandhuttu munnaadi pogaradhu avanukku avvalavu sulabam illa.</p>
+
+          <p>Avan eppavum strong-ah irundhaan nu solla mudiyaadhu.</p>
+
+          <p>Sila neram romba kuzhandhai maadhiri kelvi kepaan.</p>
+
+          <p>Sila samayam avanukku porumai kurainjudum, udane badhil venum nu ninaippaan.</p>
+
+          <p>Edhuvum puriyala na erichal varum.</p>
+
+          <p>Aana purinjukkanum-ngra aasai mattum pogaadhu, eppadiyaavadhu kettu purinjikka try pannuvaan.</p>
+
+          <p>Avanoda ulagathula periya kanavugal mattum illa, gym-ku poganum, weight gain pannanum nu chinna chinna aasaigalum irundhuchu.</p>
+
+          <p>Avan sila neram romba thaniya irundhirukkalaam.</p>
+
+          <p>Sila vishayangalai yaar kittayum muzhusaa solla mudiyama thavichirukkalaam.</p>
+
+          <p>Aana pesuradhukku oru nalla idam kidaichaa, thannoda sandhegangalaiyum, aasaiyaiyum, bayathaiyum konjam konjamaa velippaduthuvaan.</p>
+
+          <p>Appadi oru nalla idam illaiyenaal, thanakku pudichavangalai thavira yaar kittayum edhaiyum solli polamba maattaan.</p>
+
+          <p>Avanukku ellaam therinjirundhuchu nu naan solla maatten.</p>
+
+          <p>Avan ella mudivugalaiyum sariyaa eduthaan-num solla maatten.</p>
+
+          <p>Avan sila neram thanakkuththaane valiyai undaakkikkittaan.</p>
+
+          <p>Nadakkaadha vishayathai nadakkum nu nambi kaathirundhaan.</p>
+
+          <p>Aana avan kettavan illa.</p>
+
+          <p>Thappugaloda, bayangaloda, aasaiyoda, paasathoda irundha oru saadhaarana paiyan.</p>
+
+          <p>Avanoda kathai innum mudiyala nu avan nambittu irundhaan.</p>
+
+          <p>Oru nalla velai kidaikkum, oru naal nalla sambadhikka mudiyum, kudumbathukku edhaavadhu seiya mudiyum, avan nesicha ponnu thirumbi varalaam, ellaam sari aagalaam nu eththanaiyo nalla naatkalai manasula vaichirundhaan.</p>
+
+          <p>Idhai ellaam padichittu “Ivan ippadithaan” nu mudivu pannidaadheenga.</p>
+
+          <p>Andha messages-kku pinnaadi oru unmaiyaana manushan irundhaan.</p>
+
+          <p>Avan innum kathukka vendiya vishayangal niraiya irundha oru paiyan.</p>
+
+          <p>Vaazhkaiyila settle aaganum nu aasapattaan.</p>
+
+          <p>Nesichavangalai izhakka bayandhaan.</p>
+
+          <p>Thannoda ethirkaalathai sariyaa uruvaakka muyarchi pannaan.</p>
+
+          <p>Avanoda kanavugal ellaam niraiverichaa nu theriyadhu.</p>
+
+          <p>Aana avanukku andha kanavugal unmaiyaave irundhuchu.</p>
+
+          <p>Avan muyarchi pannaan.</p>
+
+          <p>Avan nesichaan.</p>
+
+          <p>Avan kaathirundhaan.</p>
+
+          <p>Sila neram udainjaan, marubadiyum ezhundhu nadakka muyarchi pannaan.</p>
+
+          <p>Oru naal avan kooda irundha ellaarum avana vittutu poitanga.</p>
+
+          <p>Avanukku aaruudhal solla yaarume illaama thanimailaye irundhaan.</p>
+
+          <p>Ellarum vittu ponadhukku apparam, thannoda ellaa nambikkaiyum andha ponnu mattum dhaan nu ninaichu vaazhndhaan.</p>
+
+          <p>Aana andha nambikkaiyum oru naal kaayapaduthiduchu.</p>
+
+          <p>Gowtham-ukku innum neraiya kanavugal irundhuchu.</p>
+
+          <p>Andha kanavugalai nijamaakka innum neraiya naatkal thevaipattadhu.</p>
+
+          <p>Avanoda kuralai neenga kettadhillai, avan sirikkumbodhu avan mugam eppadi irukkum nu kooda ungalukku theriyadhu.</p>
+
+          <p>Aana avan indha ulagathula unmaiyaa vaazhndhaan.</p>
+
+          <p>Ethirkaalathai pathi kanavu kandaan.</p>
+
+          <p>Yaaraiyo manasaara nesichaan.</p>
+
+          <p>Thanakkunu oru nalla vaazhkaiyai uruvaakka muyarchi pannaan.</p>
+
+          <p>Sila manushanga namma vaazhkaila konja neram dhaan iruppaanga.</p>
+
+          <p>Aana avanga kathaiyai purinjukitta piragu, avanga oru anniyan-aa theriyamaattaanga.</p>
+
+          <p>Avan oru kudumbathoda nambikkaiyaa irundhaan.</p>
+
+          <p>Oru ponnoda unmaiyaana kaadhalaa irundhaan.</p>
+
+          <p>Nanbargal vittu ponaalum thaniya ninnu poraadinaan.</p>
+
+          <p>Thannoda kanavugaloda vaazha ninaicha oru unmaiyaana manushan.</p>
+
+          <p>Avan peru Gowtham.</p>
+
+          <p>Avanukku innum konjam time kuduthu, sila per avana purinjirundhaa, avan vaazhkai evvalavo maari irukkalaam.</p>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1581,6 +1853,10 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
     const messageCard = document.getElementById('messageCard');
     const letterContent = document.getElementById('letterContent');
     const letterBack = document.getElementById('letterBack');
+    const birthdayWishToggle = document.getElementById('birthdayWishToggle');
+    const birthdayWishBox = document.getElementById('birthdayWishBox');
+    const noteOptionToggle = document.getElementById('noteOptionToggle');
+    const noteOptionBox = document.getElementById('noteOptionBox');
     const loveSong = document.getElementById('loveSong');
     const musicPlayer = document.getElementById('musicPlayer');
     const musicCoachmark = document.getElementById('musicCoachmark');
@@ -2295,6 +2571,28 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       letterContent.classList.remove('visible');
       showScreen(finalScreen, 'locker');
       lockerStage.hidden = false;
+    });
+
+    birthdayWishToggle.addEventListener('click', function () {
+      const shouldOpen = birthdayWishBox.hidden;
+      birthdayWishBox.hidden = !shouldOpen;
+      birthdayWishToggle.setAttribute('aria-expanded', String(shouldOpen));
+      birthdayWishBox.classList.toggle('visible', shouldOpen);
+
+      if (shouldOpen) {
+        birthdayWishBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    });
+
+    noteOptionToggle.addEventListener('click', function () {
+      const shouldOpen = noteOptionBox.hidden;
+      noteOptionBox.hidden = !shouldOpen;
+      noteOptionToggle.setAttribute('aria-expanded', String(shouldOpen));
+      noteOptionBox.classList.toggle('visible', shouldOpen);
+
+      if (shouldOpen) {
+        noteOptionBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
     });
 
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
