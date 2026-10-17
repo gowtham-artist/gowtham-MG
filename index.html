@@ -1045,13 +1045,23 @@
     }
 
     .story-para {
-      margin: 0 0 22px 0;
+      margin: 0 0 28px 0;
       color: rgba(255, 246, 251, 0.95);
       font-family: "Cormorant Garamond", serif;
-      font-size: 1.28rem;
-      line-height: 1.86;
+      font-size: 1.22rem;
+      line-height: 1.95;
       text-align: left;
       letter-spacing: 0.012em;
+    }
+
+    .note-title {
+      display: block;
+      text-align: center;
+      font-family: "Great Vibes", cursive;
+      font-size: clamp(2rem, 6vw, 3rem);
+      color: #ffd1e5;
+      margin: 0 0 24px;
+      text-shadow: 0 0 16px rgba(255,150,200,0.4);
     }
 
     .story-sentence {
@@ -1315,7 +1325,31 @@
       letter-spacing: 0.03em;
     }
 
-    .photo-bubble.is-special-bubble {
+    
+      .photo-bubble.is-special-bubble {
+        border: 3px solid #fce38a;
+        box-shadow: 0 0 25px rgba(255, 215, 120, 0.9), inset 0 0 15px rgba(255, 255, 255, 0.9), 0 0 40px rgba(255, 110, 180, 0.7);
+      }
+      
+      /* New final bubble styling */
+      #finalBubble {
+        position: fixed;
+        bottom: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 80px;
+        background-size: cover;
+        background-position: center;
+        display: none;
+        z-index: 20;
+        border-radius: 50%;
+        box-shadow: 0 0 20px rgba(255,120,180,0.6);
+      }
+      #finalBubble.float {
+        animation: floatBubbleUp 6s ease-out forwards;
+      }
+
       border: 3px solid #fce38a;
       box-shadow: 0 0 25px rgba(255, 215, 120, 0.9), inset 0 0 15px rgba(255, 255, 255, 0.9), 0 0 40px rgba(255, 110, 180, 0.7);
     }
@@ -2033,7 +2067,21 @@
   <div id="finalScreen" class="screen final-screen">
     <div class="letter-shell">
       <div class="message-panel">
+        
         <button id="messageCard" class="message-card" type="button" aria-label="Press and hold to open the message">
+          <img class="poster-photo" src="WhatsApp%20Image%202026-10-09%20at%2012.36.08%20AM.jpeg" alt="Madhu tattoo with a heart" draggable="false" />
+          <div class="open-text" aria-hidden="true">
+            <span class="notification-icon"><img class="emoji-image" src="sparkling-heart_1f496.png" alt="" /></span>
+            <span class="notification-copy">
+              <span class="notification-title">Open My Heart</span>
+              <span class="notification-hint">Hold</span>
+            </span>
+            <span class="notification-dot"></span>
+          </div>
+        </button>
+        <!-- Final bubble image, hidden initially -->
+        <div id="finalBubble" style="background-image: url('IMG-20260113-WA0195.jpg');"></div>
+
           <img class="poster-photo" src="WhatsApp%20Image%202026-10-09%20at%2012.36.08%20AM.jpeg" alt="Madhu tattoo with a heart" draggable="false" />
           <div class="open-text" aria-hidden="true">
             <span class="notification-icon"><img class="emoji-image" src="sparkling-heart_1f496.png" alt="" /></span>
@@ -2119,8 +2167,9 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
           <span>I didn't mean to hurt you with this message, Click here</span>
         </button>
         <div id="noteOptionBox" class="birthday-wish-box" hidden>
+          <strong class="note-title">Avan peru Gowtham.</strong>
+
           <p class="story-para">
-            <span class="story-sentence">Avan peru Gowtham.</span>
             <span class="story-sentence">Avan oru periya aal illa.</span>
             <span class="story-sentence">Aana avanukku periya kanavugal irundhuchu.</span>
             <span class="story-sentence">Avan innum vaazhkaiya purinjukira oru saadhaarana paiyan.</span>
@@ -2938,7 +2987,20 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       messageCard.classList.remove('is-heartbeating');
     }
 
-    messageCard.addEventListener('pointerdown', function (event) {
+    
+  // Existing messageCard event listeners (unchanged) ...
+  // Add click handler to show final bubble after message is opened
+  messageCard.addEventListener('click', function () {
+    const fb = document.getElementById('finalBubble');
+    if (fb) {
+      fb.style.display = 'block';
+      // Restart animation
+      fb.classList.remove('float');
+      void fb.offsetWidth;
+      fb.classList.add('float');
+    }
+  });
+
       startHoldingHeart(event);
       if (isHoldingHeart) messageCard.setPointerCapture(event.pointerId);
     });
@@ -3203,9 +3265,10 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
 
       setTimeout(() => {
         if (albumCompleteNotice) albumCompleteNotice.hidden = true;
-        closeAlbum();
+        // Loop back to first photo instead of closing
         currentAlbumIdx = 0;
         isClosingAlbum = false;
+        showAlbumPhoto(0, 'left');
       }, 1200);
     }
 
