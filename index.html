@@ -1315,6 +1315,68 @@
       letter-spacing: 0.03em;
     }
 
+    .photo-bubble.is-special-bubble {
+      border: 3px solid #fce38a;
+      box-shadow: 0 0 25px rgba(255, 215, 120, 0.9), inset 0 0 15px rgba(255, 255, 255, 0.9), 0 0 40px rgba(255, 110, 180, 0.7);
+    }
+
+    .album-special-badge {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 12;
+      background: linear-gradient(135deg, rgba(255, 90, 160, 0.92), rgba(212, 175, 55, 0.92));
+      color: #fff;
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-family: "Playfair Display", serif;
+      font-size: 0.88rem;
+      letter-spacing: 0.04em;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35), 0 0 15px rgba(255, 215, 120, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      white-space: nowrap;
+      animation: specialBadgePop 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+      pointer-events: none;
+    }
+
+    @keyframes specialBadgePop {
+      from { transform: translateX(-50%) scale(0.7); opacity: 0; }
+      to { transform: translateX(-50%) scale(1); opacity: 1; }
+    }
+
+    .album-main-image.is-special-photo {
+      border: 2px solid rgba(246, 213, 138, 0.9);
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45), 0 0 32px rgba(255, 130, 190, 0.65), 0 0 22px rgba(246, 213, 138, 0.55);
+    }
+
+    .album-complete-notice {
+      position: absolute;
+      inset: 0;
+      z-index: 25;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: rgba(20, 7, 16, 0.94);
+      border-radius: 20px;
+      color: #ffe6f3;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.45rem;
+      text-align: center;
+      padding: 24px;
+      backdrop-filter: blur(12px);
+      animation: modalFadeIn 0.3s ease-out;
+    }
+
+    .album-complete-notice strong {
+      font-family: "Great Vibes", cursive;
+      font-size: 2.2rem;
+      color: #ffd8ec;
+      text-shadow: 0 0 16px rgba(255, 140, 200, 0.7);
+    }
+
     #noteOptionBox p {
       break-inside: avoid;
       page-break-inside: avoid;
@@ -2172,7 +2234,7 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
               <span class="folder-emoji-icon" aria-hidden="true">📁</span>
               <div class="folder-text-wrap">
                 <span class="folder-title">Special Memories Folder</span>
-                <span class="folder-desc">Tap to open & swipe through all 40 photos</span>
+                <span class="folder-desc">Tap to open & swipe through all 41 photos</span>
               </div>
               <button class="folder-open-action" id="openAlbumBtn" type="button">Open 📂</button>
             </div>
@@ -2215,7 +2277,7 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
     <div class="album-backdrop" id="albumBackdrop"></div>
     <div class="album-content-wrap">
       <div class="album-topbar">
-        <span class="album-counter" id="albumCounter">1 / 40</span>
+        <span class="album-counter" id="albumCounter">1 / 41</span>
         <span class="album-title">Special Memories ✨</span>
         <button id="closeAlbumBtn" class="album-close-btn" type="button" aria-label="Close album">✕</button>
       </div>
@@ -2224,6 +2286,11 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
         <button id="albumPrevBtn" class="album-nav-btn album-prev" type="button" aria-label="Previous photo">‹</button>
         <div class="album-slide-container" id="albumSlideContainer">
           <img id="albumMainImage" class="album-main-image" src="" alt="Memory photo" />
+          <div id="albumSpecialBadge" class="album-special-badge" hidden>✨ Most Special Memory ❤️</div>
+          <div id="albumCompleteNotice" class="album-complete-notice" hidden>
+            <strong>All Memories Viewed</strong>
+            <span>Closing file... Tap Open to view anytime ✨</span>
+          </div>
         </div>
         <button id="albumNextBtn" class="album-nav-btn album-next" type="button" aria-label="Next photo">›</button>
       </div>
@@ -3013,9 +3080,11 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       'e2b83ea1c8ab54652ff5eb7f9d30c138.jpg',
       'c130a0d330dd7402787c2ac5c9ebad42.jpg',
       'bcd96499d4fc8433e5a6de22d33062fb.jpg',
-      'IMG-20260113-WA0195.jpg'
+      'IMG-20260113-WA0195.jpg',
+      'WhatsApp Image 2026-10-09 at 12.36.08 AM.jpeg'
     ];
 
+    const specialPhoto = 'WhatsApp Image 2026-10-09 at 12.36.08 AM.jpeg';
     let bubbleQueue = [];
 
     function startBubbles() {
@@ -3036,6 +3105,9 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
 
       const bubble = document.createElement('div');
       bubble.className = 'photo-bubble';
+      if (chosenPhoto === specialPhoto) {
+        bubble.classList.add('is-special-bubble');
+      }
       const size = Math.floor(Math.random() * 32 + 54); // 54px to 86px
       const left = Math.floor(Math.random() * 82 + 8); // 8% to 90%
       const duration = (Math.random() * 8 + 18).toFixed(1); // 18s to 26s (very slow and gentle float)
@@ -3080,13 +3152,27 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
     const albumMainImage = document.getElementById('albumMainImage');
     const albumCounter = document.getElementById('albumCounter');
     const albumViewer = document.getElementById('albumViewer');
+    const albumSpecialBadge = document.getElementById('albumSpecialBadge');
+    const albumCompleteNotice = document.getElementById('albumCompleteNotice');
 
     let currentAlbumIdx = 0;
+    let isClosingAlbum = false;
 
     function showAlbumPhoto(index, direction) {
-      if (!bubblePhotos.length) return;
-      currentAlbumIdx = (index + bubblePhotos.length) % bubblePhotos.length;
+      if (!bubblePhotos.length || isClosingAlbum) return;
+
+      if (index >= bubblePhotos.length) {
+        finishAndCloseAlbum();
+        return;
+      }
+
+      if (index < 0) {
+        index = 0;
+      }
+
+      currentAlbumIdx = index;
       const photoSrc = bubblePhotos[currentAlbumIdx];
+      const isSpecial = (photoSrc === specialPhoto);
 
       albumMainImage.classList.remove('slide-left', 'slide-right');
       void albumMainImage.offsetWidth;
@@ -3099,14 +3185,34 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       albumMainImage.src = encodeURI(photoSrc);
       albumCounter.textContent = `${currentAlbumIdx + 1} / ${bubblePhotos.length}`;
 
-      const nextIdx = (currentAlbumIdx + 1) % bubblePhotos.length;
-      const prevIdx = (currentAlbumIdx - 1 + bubblePhotos.length) % bubblePhotos.length;
+      if (albumSpecialBadge) {
+        albumSpecialBadge.hidden = !isSpecial;
+      }
+      albumMainImage.classList.toggle('is-special-photo', isSpecial);
+
+      const nextIdx = Math.min(currentAlbumIdx + 1, bubblePhotos.length - 1);
+      const prevIdx = Math.max(currentAlbumIdx - 1, 0);
       new Image().src = encodeURI(bubblePhotos[nextIdx]);
       new Image().src = encodeURI(bubblePhotos[prevIdx]);
     }
 
+    function finishAndCloseAlbum() {
+      if (isClosingAlbum) return;
+      isClosingAlbum = true;
+      if (albumCompleteNotice) albumCompleteNotice.hidden = false;
+
+      setTimeout(() => {
+        if (albumCompleteNotice) albumCompleteNotice.hidden = true;
+        closeAlbum();
+        currentAlbumIdx = 0;
+        isClosingAlbum = false;
+      }, 1200);
+    }
+
     function openAlbum() {
       if (!memoryAlbumModal) return;
+      isClosingAlbum = false;
+      if (albumCompleteNotice) albumCompleteNotice.hidden = true;
       memoryAlbumModal.hidden = false;
       showAlbumPhoto(0);
     }
