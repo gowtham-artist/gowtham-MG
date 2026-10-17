@@ -1059,6 +1059,262 @@
       color: inherit;
     }
 
+    /* Memory Folder Card */
+    .memory-folder-box {
+      margin-top: 30px;
+      margin-bottom: 12px;
+      padding: 18px 20px;
+      border: 1px solid rgba(255, 198, 221, 0.38);
+      border-radius: 22px;
+      background: linear-gradient(135deg, rgba(255, 175, 215, 0.18), rgba(65, 20, 50, 0.7));
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35), inset 0 1px rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(12px);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .memory-folder-box:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 34px rgba(255, 105, 171, 0.32);
+    }
+
+    .memory-folder-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .folder-emoji-icon {
+      font-size: 2.3rem;
+      filter: drop-shadow(0 2px 10px rgba(255, 180, 215, 0.6));
+      flex-shrink: 0;
+    }
+
+    .folder-text-wrap {
+      flex: 1;
+      min-width: 140px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .folder-title {
+      font-family: "Playfair Display", serif;
+      font-size: 1.08rem;
+      font-weight: 600;
+      color: #fff4f9;
+      letter-spacing: 0.02em;
+    }
+
+    .folder-desc {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 0.98rem;
+      color: rgba(255, 225, 240, 0.85);
+    }
+
+    .folder-open-action {
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 999px;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #ff8fbd, #d94991);
+      box-shadow: 0 4px 16px rgba(255, 86, 154, 0.4);
+      color: #fff;
+      font: 600 0.92rem "Playfair Display", serif;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      touch-action: manipulation;
+    }
+
+    .folder-open-action:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 22px rgba(255, 86, 154, 0.55);
+    }
+
+    /* Full-screen Memory Album Modal */
+    .memory-album-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      animation: modalFadeIn 0.28s ease-out forwards;
+    }
+
+    .memory-album-modal[hidden] {
+      display: none;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .album-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(12, 5, 12, 0.88);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .album-content-wrap {
+      position: relative;
+      z-index: 2;
+      width: min(600px, 96vw);
+      max-height: 94vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(160deg, rgba(255, 200, 225, 0.1), rgba(28, 10, 22, 0.85));
+      border: 1px solid rgba(255, 200, 225, 0.25);
+      border-radius: 26px;
+      padding: 18px 16px 14px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.65), 0 0 35px rgba(255, 110, 180, 0.2);
+    }
+
+    .album-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0 6px;
+    }
+
+    .album-counter {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #ffd8ec;
+      letter-spacing: 0.05em;
+    }
+
+    .album-title {
+      font-family: "Great Vibes", cursive;
+      font-size: 1.7rem;
+      color: #fff0f7;
+      text-shadow: 0 0 12px rgba(255, 160, 205, 0.6);
+    }
+
+    .album-close-btn {
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      touch-action: manipulation;
+    }
+
+    .album-close-btn:hover {
+      background: rgba(255, 90, 150, 0.55);
+      transform: scale(1.08);
+    }
+
+    .album-viewer {
+      position: relative;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 380px;
+      max-height: 64vh;
+      touch-action: pan-y pinch-zoom;
+      overflow: hidden;
+      border-radius: 20px;
+    }
+
+    .album-slide-container {
+      width: 100%;
+      height: 100%;
+      min-height: 360px;
+      max-height: 64vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .album-main-image {
+      max-width: 100%;
+      max-height: 62vh;
+      object-fit: contain;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 160, 205, 0.2);
+      transition: opacity 0.22s ease, transform 0.22s ease;
+      will-change: transform, opacity;
+    }
+
+    .album-main-image.slide-left {
+      animation: slideInLeft 0.24s ease-out;
+    }
+
+    .album-main-image.slide-right {
+      animation: slideInRight 0.24s ease-out;
+    }
+
+    @keyframes slideInLeft {
+      from { transform: translateX(35px); opacity: 0.3; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideInRight {
+      from { transform: translateX(-35px); opacity: 0.3; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .album-nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      background: rgba(30, 14, 26, 0.72);
+      color: #fff;
+      font-size: 1.8rem;
+      line-height: 1;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      transition: all 0.2s ease;
+      touch-action: manipulation;
+    }
+
+    .album-nav-btn:hover {
+      background: rgba(255, 110, 175, 0.75);
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .album-prev {
+      left: 8px;
+    }
+
+    .album-next {
+      right: 8px;
+    }
+
+    .album-hint {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 0.95rem;
+      color: rgba(255, 220, 238, 0.8);
+      text-align: center;
+      letter-spacing: 0.03em;
+    }
+
     #noteOptionBox p {
       break-inside: avoid;
       page-break-inside: avoid;
@@ -1910,6 +2166,17 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
             <span class="story-sentence">Avan peru Gowtham.</span>
             <span class="story-sentence">Avanukku innum konjam time kuduthu, sila per avana purinjirundhaa, avan vaazhkai evvalavo maari irukkalaam.</span>
           </p>
+
+          <div class="memory-folder-box" id="memoryFolderBox">
+            <div class="memory-folder-header">
+              <span class="folder-emoji-icon" aria-hidden="true">📁</span>
+              <div class="folder-text-wrap">
+                <span class="folder-title">Special Memories Folder</span>
+                <span class="folder-desc">Tap to open & swipe through all 40 photos</span>
+              </div>
+              <button class="folder-open-action" id="openAlbumBtn" type="button">Open 📂</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1941,6 +2208,28 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
   <div id="musicCoachmark" class="music-coachmark" role="status" aria-live="polite" hidden></div>
   <div id="heartBurstLayer" class="heart-burst-layer" aria-hidden="true">
     <div class="floating-butterflies" id="floatingButterflies"></div>
+  </div>
+
+  <!-- Memory Album Swipe Viewer -->
+  <div id="memoryAlbumModal" class="memory-album-modal" hidden aria-modal="true" role="dialog">
+    <div class="album-backdrop" id="albumBackdrop"></div>
+    <div class="album-content-wrap">
+      <div class="album-topbar">
+        <span class="album-counter" id="albumCounter">1 / 40</span>
+        <span class="album-title">Special Memories ✨</span>
+        <button id="closeAlbumBtn" class="album-close-btn" type="button" aria-label="Close album">✕</button>
+      </div>
+
+      <div class="album-viewer" id="albumViewer">
+        <button id="albumPrevBtn" class="album-nav-btn album-prev" type="button" aria-label="Previous photo">‹</button>
+        <div class="album-slide-container" id="albumSlideContainer">
+          <img id="albumMainImage" class="album-main-image" src="" alt="Memory photo" />
+        </div>
+        <button id="albumNextBtn" class="album-nav-btn album-next" type="button" aria-label="Next photo">›</button>
+      </div>
+
+      <div class="album-hint">Swipe left / right or tap arrows to view photos</div>
+    </div>
   </div>
 
   <audio id="loveSong" preload="none"></audio>
@@ -2727,26 +3016,30 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       'IMG-20260113-WA0195.jpg'
     ];
 
-    let shuffledPhotos = [];
-    let photoIndex = 0;
+    let bubbleQueue = [];
 
-    function getNextBubblePhoto() {
-      if (!shuffledPhotos.length || photoIndex >= shuffledPhotos.length) {
-        shuffledPhotos = [...bubblePhotos].sort(() => Math.random() - 0.5);
-        photoIndex = 0;
-      }
-      return shuffledPhotos[photoIndex++];
+    function startBubbles() {
+      if (bubbleInterval) clearInterval(bubbleInterval);
+      bubbleQueue = [...bubblePhotos];
+      spawnSingleBubble();
+      bubbleInterval = setInterval(spawnSingleBubble, 1500);
     }
 
     function spawnSingleBubble() {
       if (!photoBubblesLayer) return;
+      if (!bubbleQueue.length) {
+        clearInterval(bubbleInterval);
+        bubbleInterval = null;
+        return;
+      }
+      const chosenPhoto = bubbleQueue.shift();
+
       const bubble = document.createElement('div');
       bubble.className = 'photo-bubble';
       const size = Math.floor(Math.random() * 32 + 54); // 54px to 86px
       const left = Math.floor(Math.random() * 82 + 8); // 8% to 90%
       const duration = (Math.random() * 8 + 18).toFixed(1); // 18s to 26s (very slow and gentle float)
       const swayOffset = (Math.random() * 32 - 16).toFixed(0);
-      const chosenPhoto = getNextBubblePhoto();
 
       bubble.style.width = `${size}px`;
       bubble.style.height = `${size}px`;
@@ -2767,12 +3060,6 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       photoBubblesLayer.appendChild(bubble);
     }
 
-    function startBubbles() {
-      if (bubbleInterval) clearInterval(bubbleInterval);
-      spawnSingleBubble();
-      bubbleInterval = setInterval(spawnSingleBubble, 1500);
-    }
-
     function stopBubbles() {
       if (bubbleInterval) {
         clearInterval(bubbleInterval);
@@ -2783,7 +3070,107 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       }
     }
 
+    // Memory Folder & Swipe Album
+    const memoryAlbumModal = document.getElementById('memoryAlbumModal');
+    const albumBackdrop = document.getElementById('albumBackdrop');
+    const openAlbumBtn = document.getElementById('openAlbumBtn');
+    const closeAlbumBtn = document.getElementById('closeAlbumBtn');
+    const albumPrevBtn = document.getElementById('albumPrevBtn');
+    const albumNextBtn = document.getElementById('albumNextBtn');
+    const albumMainImage = document.getElementById('albumMainImage');
+    const albumCounter = document.getElementById('albumCounter');
+    const albumViewer = document.getElementById('albumViewer');
+
+    let currentAlbumIdx = 0;
+
+    function showAlbumPhoto(index, direction) {
+      if (!bubblePhotos.length) return;
+      currentAlbumIdx = (index + bubblePhotos.length) % bubblePhotos.length;
+      const photoSrc = bubblePhotos[currentAlbumIdx];
+
+      albumMainImage.classList.remove('slide-left', 'slide-right');
+      void albumMainImage.offsetWidth;
+      if (direction === 'left') {
+        albumMainImage.classList.add('slide-left');
+      } else if (direction === 'right') {
+        albumMainImage.classList.add('slide-right');
+      }
+
+      albumMainImage.src = encodeURI(photoSrc);
+      albumCounter.textContent = `${currentAlbumIdx + 1} / ${bubblePhotos.length}`;
+
+      const nextIdx = (currentAlbumIdx + 1) % bubblePhotos.length;
+      const prevIdx = (currentAlbumIdx - 1 + bubblePhotos.length) % bubblePhotos.length;
+      new Image().src = encodeURI(bubblePhotos[nextIdx]);
+      new Image().src = encodeURI(bubblePhotos[prevIdx]);
+    }
+
+    function openAlbum() {
+      if (!memoryAlbumModal) return;
+      memoryAlbumModal.hidden = false;
+      showAlbumPhoto(0);
+    }
+
+    function closeAlbum() {
+      if (!memoryAlbumModal) return;
+      memoryAlbumModal.hidden = true;
+    }
+
+    if (openAlbumBtn) openAlbumBtn.addEventListener('click', openAlbum);
+    if (closeAlbumBtn) closeAlbumBtn.addEventListener('click', closeAlbum);
+    if (albumBackdrop) albumBackdrop.addEventListener('click', closeAlbum);
+
+    if (albumPrevBtn) {
+      albumPrevBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        showAlbumPhoto(currentAlbumIdx - 1, 'right');
+      });
+    }
+
+    if (albumNextBtn) {
+      albumNextBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        showAlbumPhoto(currentAlbumIdx + 1, 'left');
+      });
+    }
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    if (albumViewer) {
+      albumViewer.addEventListener('touchstart', function (e) {
+        if (!e.touches.length) return;
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+
+      albumViewer.addEventListener('touchend', function (e) {
+        if (!e.changedTouches.length) return;
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
+        const diffX = touchEndX - touchStartX;
+        const diffY = touchEndY - touchStartY;
+
+        if (Math.abs(diffX) > 35 && Math.abs(diffX) > Math.abs(diffY)) {
+          if (diffX < 0) {
+            showAlbumPhoto(currentAlbumIdx + 1, 'left');
+          } else {
+            showAlbumPhoto(currentAlbumIdx - 1, 'right');
+          }
+        }
+      }, { passive: true });
+    }
+
+    window.addEventListener('keydown', function (e) {
+      if (memoryAlbumModal && !memoryAlbumModal.hidden) {
+        if (e.key === 'ArrowRight') showAlbumPhoto(currentAlbumIdx + 1, 'left');
+        else if (e.key === 'ArrowLeft') showAlbumPhoto(currentAlbumIdx - 1, 'right');
+        else if (e.key === 'Escape') closeAlbum();
+      }
+    });
+
     letterBack.addEventListener('click', function () {
+      closeAlbum();
       stopBubbles();
       letterContent.classList.remove('visible');
       showScreen(finalScreen, 'locker');
