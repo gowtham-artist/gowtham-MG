@@ -1021,105 +1021,42 @@
         transform: translateY(0) translateX(0) scale(0.65);
         opacity: 0;
       }
-      10% {
-        opacity: 0.96;
-        transform: translateY(-12vh) translateX(var(--sway, 10px)) scale(0.92);
+      8% {
+        opacity: 0.95;
+        transform: translateY(-8vh) translateX(var(--sway, 12px)) scale(0.9);
       }
-      30% {
-        transform: translateY(-32vh) translateX(calc(var(--sway, 10px) * -1)) scale(1);
+      28% {
+        transform: translateY(-32vh) translateX(calc(var(--sway, 12px) * -1)) scale(1.02);
       }
       55% {
-        transform: translateY(-56vh) translateX(var(--sway, 10px)) scale(1.05);
+        transform: translateY(-62vh) translateX(var(--sway, 12px)) scale(1.04);
       }
       80% {
-        transform: translateY(-80vh) translateX(calc(var(--sway, 10px) * -0.7)) scale(1.02);
+        transform: translateY(-88vh) translateX(calc(var(--sway, 12px) * -0.7)) scale(1);
       }
-      92% {
-        opacity: 0.95;
-        transform: translateY(-92vh) translateX(calc(var(--sway, 10px) * 0.4)) scale(1);
+      94% {
+        opacity: 0.92;
+        transform: translateY(-105vh) translateX(calc(var(--sway, 12px) * 0.4)) scale(0.96);
       }
       100% {
-        transform: translateY(-112vh) translateX(0) scale(0.85);
+        transform: translateY(-120vh) translateX(0) scale(0.85);
         opacity: 0;
       }
     }
 
     .story-para {
-      margin: 0 0 20px 0;
-      color: rgba(255, 246, 251, 0.92);
+      margin: 0 0 22px 0;
+      color: rgba(255, 246, 251, 0.95);
       font-family: "Cormorant Garamond", serif;
-      font-size: 1.26rem;
-      line-height: 1.82;
+      font-size: 1.28rem;
+      line-height: 1.86;
       text-align: left;
+      letter-spacing: 0.012em;
     }
 
     .story-sentence {
       display: inline;
-      transition: color 0.3s ease, text-shadow 0.3s ease, background 0.3s ease, opacity 0.35s ease;
-      border-radius: 4px;
-      opacity: 0.45;
-      padding: 0 2px;
-    }
-
-    .story-sentence.is-past {
-      opacity: 0.92;
-      color: #fff4f9;
-    }
-
-    .story-sentence.is-reading {
-      opacity: 1;
-      color: #ffffff;
-      background: linear-gradient(90deg, rgba(255, 130, 185, 0.32), rgba(255, 200, 230, 0.22));
-      text-shadow: 0 0 12px rgba(255, 170, 215, 0.95), 0 0 20px rgba(255, 100, 170, 0.6);
-      box-shadow: 0 0 10px rgba(255, 120, 180, 0.25);
-    }
-
-    .story-sentence.is-paused {
-      border-bottom: 2px dashed #ff90bf;
-      animation: pulsePaused 0.8s ease-in-out infinite alternate;
-    }
-
-    @keyframes pulsePaused {
-      0% { text-shadow: 0 0 10px rgba(255, 160, 210, 0.7); }
-      100% { text-shadow: 0 0 18px rgba(255, 220, 240, 1); }
-    }
-
-    .story-reader-controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 20px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid rgba(255, 198, 221, 0.22);
-      flex-wrap: wrap;
-    }
-
-    .story-ctrl-btn {
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 999px;
-      background: linear-gradient(135deg, rgba(255, 175, 210, 0.22), rgba(255,255,255,0.08));
-      color: #ffe6f3;
-      font-family: "Playfair Display", serif;
-      font-size: 0.86rem;
-      padding: 7px 16px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      touch-action: manipulation;
-    }
-
-    .story-ctrl-btn:hover {
-      background: linear-gradient(135deg, rgba(255, 175, 210, 0.35), rgba(255,255,255,0.14));
-      border-color: rgba(255, 210, 235, 0.6);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 14px rgba(255, 120, 180, 0.28);
-    }
-
-    .story-reading-indicator {
-      font-size: 0.88rem;
-      color: rgba(255, 220, 238, 0.85);
-      font-family: "Cormorant Garamond", serif;
-      font-style: italic;
-      margin-left: auto;
+      color: inherit;
     }
 
     #noteOptionBox p {
@@ -1864,13 +1801,6 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
           <span>I didn't mean to hurt you with this message, Click here</span>
         </button>
         <div id="noteOptionBox" class="birthday-wish-box" hidden>
-          <div class="story-reader-controls">
-            <button id="storyPlayPauseBtn" class="story-ctrl-btn" type="button">⏸ Pause Reading</button>
-            <button id="storyShowAllBtn" class="story-ctrl-btn" type="button">⚡ Show Full Note</button>
-            <button id="storyRestartBtn" class="story-ctrl-btn" type="button">🔄 Read Again</button>
-            <span id="storyReadingIndicator" class="story-reading-indicator">Reading line by line...</span>
-          </div>
-
           <p class="story-para">
             <span class="story-sentence">Avan peru Gowtham.</span>
             <span class="story-sentence">Avan oru periya aal illa.</span>
@@ -2752,31 +2682,16 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
     });
 
     const photoBubblesLayer = document.getElementById('photoBubblesLayer');
-    const storyPlayPauseBtn = document.getElementById('storyPlayPauseBtn');
-    const storyShowAllBtn = document.getElementById('storyShowAllBtn');
-    const storyRestartBtn = document.getElementById('storyRestartBtn');
-    const storyReadingIndicator = document.getElementById('storyReadingIndicator');
-
-    let storySentences = [];
-    let currentStoryIdx = 0;
-    let storyTimer = null;
-    let isStoryPaused = false;
     let bubbleInterval = null;
-
-    function initStorySentences() {
-      if (!storySentences.length) {
-        storySentences = Array.from(noteOptionBox.querySelectorAll('.story-sentence'));
-      }
-    }
 
     function spawnSingleBubble() {
       if (!photoBubblesLayer) return;
       const bubble = document.createElement('div');
       bubble.className = 'photo-bubble';
-      const size = Math.floor(Math.random() * 32 + 50); // 50px to 82px
-      const left = Math.floor(Math.random() * 80 + 10); // 10% to 90%
-      const duration = (Math.random() * 3 + 5.5).toFixed(1); // 5.5s to 8.5s
-      const swayOffset = (Math.random() * 26 - 13).toFixed(0);
+      const size = Math.floor(Math.random() * 32 + 52); // 52px to 84px
+      const left = Math.floor(Math.random() * 82 + 8); // 8% to 90%
+      const duration = (Math.random() * 8 + 18).toFixed(1); // 18s to 26s (very slow and gentle float)
+      const swayOffset = (Math.random() * 32 - 16).toFixed(0);
 
       bubble.style.width = `${size}px`;
       bubble.style.height = `${size}px`;
@@ -2800,7 +2715,7 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
     function startBubbles() {
       if (bubbleInterval) clearInterval(bubbleInterval);
       spawnSingleBubble();
-      bubbleInterval = setInterval(spawnSingleBubble, 1100);
+      bubbleInterval = setInterval(spawnSingleBubble, 2400);
     }
 
     function stopBubbles() {
@@ -2813,105 +2728,8 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       }
     }
 
-    function playNextSentence() {
-      clearTimeout(storyTimer);
-      if (isStoryPaused) return;
-
-      initStorySentences();
-      if (currentStoryIdx >= storySentences.length) {
-        if (storyReadingIndicator) storyReadingIndicator.textContent = 'Completed ✨';
-        if (storyPlayPauseBtn) storyPlayPauseBtn.style.display = 'none';
-        return;
-      }
-
-      storySentences.forEach((s, i) => {
-        if (i < currentStoryIdx) {
-          s.classList.remove('is-reading', 'is-paused');
-          s.classList.add('is-past');
-        } else if (i === currentStoryIdx) {
-          s.classList.add('is-reading');
-          s.classList.remove('is-past', 'is-paused');
-        } else {
-          s.classList.remove('is-reading', 'is-past', 'is-paused');
-        }
-      });
-
-      const activeSentence = storySentences[currentStoryIdx];
-      if (activeSentence) {
-        activeSentence.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-
-      const sentenceText = activeSentence ? activeSentence.textContent.trim() : '';
-      const readDuration = Math.max(1300, Math.min(sentenceText.length * 52, 3800));
-
-      storyTimer = setTimeout(() => {
-        if (isStoryPaused) return;
-        if (activeSentence) activeSentence.classList.add('is-paused');
-        if (storyReadingIndicator) storyReadingIndicator.textContent = 'Pausing at dot...';
-
-        storyTimer = setTimeout(() => {
-          if (isStoryPaused) return;
-          if (activeSentence) activeSentence.classList.remove('is-paused');
-          if (storyReadingIndicator) storyReadingIndicator.textContent = 'Reading line by line...';
-          currentStoryIdx++;
-          playNextSentence();
-        }, 950);
-      }, readDuration);
-    }
-
-    function showAllStory() {
-      clearTimeout(storyTimer);
-      isStoryPaused = true;
-      initStorySentences();
-      storySentences.forEach(s => {
-        s.classList.remove('is-reading', 'is-paused');
-        s.classList.add('is-past');
-      });
-      if (storyReadingIndicator) storyReadingIndicator.textContent = 'Full note revealed';
-      if (storyPlayPauseBtn) {
-        storyPlayPauseBtn.textContent = '▶ Read from Start';
-        storyPlayPauseBtn.style.display = 'inline-block';
-      }
-    }
-
-    function restartStory() {
-      clearTimeout(storyTimer);
-      isStoryPaused = false;
-      currentStoryIdx = 0;
-      initStorySentences();
-      storySentences.forEach(s => s.classList.remove('is-reading', 'is-past', 'is-paused'));
-      if (storyPlayPauseBtn) {
-        storyPlayPauseBtn.textContent = '⏸ Pause Reading';
-        storyPlayPauseBtn.style.display = 'inline-block';
-      }
-      if (storyReadingIndicator) storyReadingIndicator.textContent = 'Reading line by line...';
-      playNextSentence();
-    }
-
-    function toggleStoryPlayPause() {
-      if (currentStoryIdx >= storySentences.length) {
-        restartStory();
-        return;
-      }
-      isStoryPaused = !isStoryPaused;
-      if (isStoryPaused) {
-        clearTimeout(storyTimer);
-        storyPlayPauseBtn.textContent = '▶ Continue Reading';
-        if (storyReadingIndicator) storyReadingIndicator.textContent = 'Paused';
-      } else {
-        storyPlayPauseBtn.textContent = '⏸ Pause Reading';
-        if (storyReadingIndicator) storyReadingIndicator.textContent = 'Reading line by line...';
-        playNextSentence();
-      }
-    }
-
-    if (storyPlayPauseBtn) storyPlayPauseBtn.addEventListener('click', toggleStoryPlayPause);
-    if (storyShowAllBtn) storyShowAllBtn.addEventListener('click', showAllStory);
-    if (storyRestartBtn) storyRestartBtn.addEventListener('click', restartStory);
-
     letterBack.addEventListener('click', function () {
       stopBubbles();
-      clearTimeout(storyTimer);
       letterContent.classList.remove('visible');
       showScreen(finalScreen, 'locker');
       lockerStage.hidden = false;
@@ -2941,10 +2759,8 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       if (shouldOpen) {
         noteOptionBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         startBubbles();
-        restartStory();
       } else {
         stopBubbles();
-        clearTimeout(storyTimer);
       }
     }
     noteOptionToggle.addEventListener('click', toggleNoteOption);
