@@ -2081,18 +2081,8 @@
         </button>
         <!-- Final bubble image, hidden initially -->
         <div id="finalBubble" style="background-image: url('IMG-20260113-WA0195.jpg');"></div>
-
-          <img class="poster-photo" src="WhatsApp%20Image%202026-10-09%20at%2012.36.08%20AM.jpeg" alt="Madhu tattoo with a heart" draggable="false" />
-          <div class="open-text" aria-hidden="true">
-            <span class="notification-icon"><img class="emoji-image" src="sparkling-heart_1f496.png" alt="" /></span>
-            <span class="notification-copy">
-              <span class="notification-title">Open My Heart</span>
-              <span class="notification-hint">Hold</span>
-            </span>
-            <span class="notification-dot"></span>
-          </div>
-        </button>
       </div>
+
 
       <div id="keyStage" class="stage-screen" aria-live="polite" hidden>
         <div class="stage-icon" aria-hidden="true"><img class="emoji-image" src="old-key_1f5dd-fe0f.png" alt="" /></div>
@@ -2987,20 +2977,8 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       messageCard.classList.remove('is-heartbeating');
     }
 
-    
-  // Existing messageCard event listeners (unchanged) ...
-  // Add click handler to show final bubble after message is opened
-  messageCard.addEventListener('click', function () {
-    const fb = document.getElementById('finalBubble');
-    if (fb) {
-      fb.style.display = 'block';
-      // Restart animation
-      fb.classList.remove('float');
-      void fb.offsetWidth;
-      fb.classList.add('float');
-    }
-  });
 
+    messageCard.addEventListener('pointerdown', function (event) {
       startHoldingHeart(event);
       if (isHoldingHeart) messageCard.setPointerCapture(event.pointerId);
     });
