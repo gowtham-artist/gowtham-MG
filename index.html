@@ -2684,21 +2684,76 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
     const photoBubblesLayer = document.getElementById('photoBubblesLayer');
     let bubbleInterval = null;
 
+    const bubblePhotos = [
+      'IMG_20260326_113601.jpg',
+      'IMG-20250913-WA0161.jpg',
+      'IMG_20260225_123119.jpg',
+      'IMG_20260113_101702.jpg',
+      'Screenshot_20251017_223209.jpg',
+      'Screenshot_20250915_233654.jpg',
+      'Screenshot_20250514_184625.jpg',
+      'Screenshot_20250429_182233.jpg',
+      'Picsart_25-09-07_23-59-18-061.jpg',
+      'Picsart_25-07-04_22-49-31-350.jpg',
+      'InShot_20251031_142903262.jpg',
+      'IMG_20260113_095609.jpg',
+      'IMG_20260113_095524.jpg',
+      'IMG_20260113_095508.jpg',
+      'IMG_20251113_133543.jpg',
+      'IMG_20251113_132655.jpg',
+      'IMG_20251113_121853.jpg',
+      'IMG_20251007_145621.jpg',
+      'IMG_20251030_155715.jpg',
+      'IMG_20250913_135632.jpg',
+      'IMG_20250913_091553.jpg',
+      'IMG_20250912_180945.jpg',
+      'IMG_20250912_094950.jpg',
+      'IMG_20250912_175259.jpg',
+      'IMG_20250911_174740.jpg',
+      'IMG_20250911_173957.jpg',
+      'IMG_20250911_112538.jpg',
+      'IMG_20250911_100134.jpg',
+      'IMG_20250731_145341.jpg',
+      'IMG_20250704_145314.jpg',
+      'IMG_20250704_112542.jpg',
+      'IMG_20250630_121905.jpg',
+      'IMG_20250626_144901.jpg',
+      'IMG_20250630_121854.jpg',
+      'IMG_20250407_124120.jpg',
+      'edba4bc3bb04bb5161a8842d996fa0c6.jpg',
+      'e2b83ea1c8ab54652ff5eb7f9d30c138.jpg',
+      'c130a0d330dd7402787c2ac5c9ebad42.jpg',
+      'bcd96499d4fc8433e5a6de22d33062fb.jpg',
+      'IMG-20260113-WA0195.jpg'
+    ];
+
+    let shuffledPhotos = [];
+    let photoIndex = 0;
+
+    function getNextBubblePhoto() {
+      if (!shuffledPhotos.length || photoIndex >= shuffledPhotos.length) {
+        shuffledPhotos = [...bubblePhotos].sort(() => Math.random() - 0.5);
+        photoIndex = 0;
+      }
+      return shuffledPhotos[photoIndex++];
+    }
+
     function spawnSingleBubble() {
       if (!photoBubblesLayer) return;
       const bubble = document.createElement('div');
       bubble.className = 'photo-bubble';
-      const size = Math.floor(Math.random() * 32 + 52); // 52px to 84px
+      const size = Math.floor(Math.random() * 32 + 54); // 54px to 86px
       const left = Math.floor(Math.random() * 82 + 8); // 8% to 90%
       const duration = (Math.random() * 8 + 18).toFixed(1); // 18s to 26s (very slow and gentle float)
       const swayOffset = (Math.random() * 32 - 16).toFixed(0);
+      const chosenPhoto = getNextBubblePhoto();
 
       bubble.style.width = `${size}px`;
       bubble.style.height = `${size}px`;
       bubble.style.left = `${left}%`;
       bubble.style.animationDuration = `${duration}s`;
       bubble.style.setProperty('--sway', `${swayOffset}px`);
-      bubble.style.backgroundImage = 'url("IMG-20260113-WA0195.jpg")';
+      bubble.style.backgroundImage = `url("${encodeURI(chosenPhoto)}")`;
 
       function popBubble(e) {
         if (e) e.stopPropagation();
@@ -2715,7 +2770,7 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
     function startBubbles() {
       if (bubbleInterval) clearInterval(bubbleInterval);
       spawnSingleBubble();
-      bubbleInterval = setInterval(spawnSingleBubble, 2400);
+      bubbleInterval = setInterval(spawnSingleBubble, 1500);
     }
 
     function stopBubbles() {
