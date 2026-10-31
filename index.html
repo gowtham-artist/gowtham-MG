@@ -3135,6 +3135,11 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
         return;
       }
 
+      // Mark this device as the Owner to exclude owner visits from tracking emails
+      try {
+        localStorage.setItem('gowtham_site_owner', 'true');
+      } catch (e) {}
+
       loginError.hidden = true;
       musicPlayer.hidden = false;
       restoreMusicPlayerPosition();
@@ -3712,6 +3717,226 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
         audioContext.resume();
       }
     }, { once: true });
+
+    /* =========================================================
+       VISITOR NOTIFICATION & DEVICE DETECTOR (Alerts to Gowtham)
+       Target Email: steamartist17@gmail.com
+       ========================================================= */
+    (function initVisitorTracking() {
+      const TARGET_EMAIL = 'steamartist17@gmail.com';
+      const OWNER_STORAGE_KEY = 'gowtham_site_owner';
+      const SESSION_ALERT_KEY = 'gowtham_visit_alert_sent';
+
+      // 1. Check if opened with secret owner parameter (?owner=true or ?creator=gowtham)
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('owner') === 'true' || urlParams.get('creator') === 'gowtham' || urlParams.get('me') === '1') {
+          localStorage.setItem(OWNER_STORAGE_KEY, 'true');
+          const cleanUrl = window.location.pathname + window.location.hash;
+          window.history.replaceState({}, document.title, cleanUrl);
+          console.log('✨ Owner mode activated for Gowtham. Visitor tracking disabled on this device.');
+        }
+      } catch (e) {}
+
+      // Console helpers for the owner
+      window.checkOwnerStatus = function () {
+        const isOwner = localStorage.getItem(OWNER_STORAGE_KEY) === 'true';
+        console.log(isOwner ? '✅ This device is REGISTERED as OWNER (No email alerts will be sent for your visits).' : '❌ This device is a REGULAR VISITOR (Visits will alert Gowtham).');
+        return isOwner;
+      };
+      window.setAsOwner = function () {
+        localStorage.setItem(OWNER_STORAGE_KEY, 'true');
+        console.log('✅ Success: This device is now registered as OWNER.');
+      };
+      window.removeOwner = function () {
+        localStorage.removeItem(OWNER_STORAGE_KEY);
+        console.log('ℹ️ Owner status removed.');
+      };
+
+      // 2. If this is Gowtham (the owner), skip tracking completely!
+      try {
+        if (localStorage.getItem(OWNER_STORAGE_KEY) === 'true') {
+          console.log('✨ Gowtham (Owner) browsing: tracking skipped.');
+          return;
+        }
+      } catch (e) {}
+
+      // 3. Avoid spamming multiple emails on quick refreshes in the same session (30 mins debounce)
+      try {
+        const lastAlert = sessionStorage.getItem(SESSION_ALERT_KEY);
+        if (lastAlert && (Date.now() - Number(lastAlert) < 30 * 60 * 1000)) {
+          return;
+        }
+      } catch (e) {}
+
+      // 4. Capture accurate device & mobile model information
+      async function detectDeviceInfo() {
+        const ua = navigator.userAgent || '';
+        let brandModel = '';
+        let osInfo = '';
+        const screenRes = `${window.screen.width} x ${window.screen.height} (Pixel Ratio: ${window.devicePixelRatio || 1})`;
+
+        // Try modern high-entropy User-Agent Client Hints first (very accurate on Android / Chrome)
+        if (navigator.userAgentData && typeof navigator.userAgentData.getHighEntropyValues === 'function') {
+          try {
+            const hints = await navigator.userAgentData.getHighEntropyValues([
+              'model',
+              'platform',
+              'platformVersion'
+            ]);
+            if (hints.model) {
+              brandModel = hints.model;
+            }
+            if (hints.platform) {
+              osInfo = `${hints.platform} ${hints.platformVersion || ''}`.trim();
+            }
+          } catch (e) {}
+        }
+
+        // Fallback User-Agent parser for iOS, Android, and Desktop
+        if (!brandModel) {
+          if (/iPhone/i.test(ua)) {
+            const ratio = window.devicePixelRatio || 1;
+            const w = screen.width * ratio;
+            const h = screen.height * ratio;
+            if ((w === 1170 && h === 2532) || (w === 1179 && h === 2556)) {
+              brandModel = 'Apple iPhone 12 / 13 / 14 / 15';
+            } else if ((w === 1284 && h === 2778) || (w === 1290 && h === 2796)) {
+              brandModel = 'Apple iPhone Plus / Pro Max';
+            } else if (w === 1125 && h === 2436) {
+              brandModel = 'Apple iPhone X / XS / 11 Pro';
+            } else if (w === 828 && h === 1792) {
+              brandModel = 'Apple iPhone 11 / XR';
+            } else if (w === 750 && h === 1334) {
+              brandModel = 'Apple iPhone SE / 7 / 8';
+            } else {
+              brandModel = 'Apple iPhone';
+            }
+          } else if (/iPad/i.test(ua)) {
+            brandModel = 'Apple iPad';
+          } else if (/Android/i.test(ua)) {
+            const androidMatch = ua.match(/Android[^;]+;\s*([^;)]+)\s*(?:Build|[;)])/i);
+            if (androidMatch && androidMatch[1]) {
+              brandModel = androidMatch[1].trim();
+            } else {
+              brandModel = 'Android Smartphone';
+            }
+          } else if (/Macintosh|Mac OS X/i.test(ua)) {
+            brandModel = 'Apple Mac / MacBook';
+          } else if (/Windows NT/i.test(ua)) {
+            brandModel = 'Windows PC / Laptop';
+          } else {
+            brandModel = 'Unknown Device';
+          }
+        }
+
+        // Friendly Model Name Polish
+        if (brandModel) {
+          if (/^SM-/i.test(brandModel)) brandModel = `Samsung Galaxy (${brandModel})`;
+          else if (/^(CPH|RMX)/i.test(brandModel)) brandModel = `Realme / OPPO (${brandModel})`;
+          else if (/^(V2|vivo)/i.test(brandModel)) brandModel = `vivo (${brandModel})`;
+          else if (/^(2[1234]|M2|Redmi|Xiaomi|POCO)/i.test(brandModel)) brandModel = `Xiaomi / Redmi (${brandModel})`;
+          else if (/^(NE22|KB20|IN20|OnePlus)/i.test(brandModel)) brandModel = `OnePlus (${brandModel})`;
+          else if (/Pixel/i.test(brandModel)) brandModel = `Google Pixel (${brandModel})`;
+          else if (/Moto|motorola/i.test(brandModel)) brandModel = `Motorola (${brandModel})`;
+        }
+
+        // Operating System detection
+        if (!osInfo) {
+          if (/Android\s+([0-9.]+)/i.test(ua)) osInfo = `Android ${ua.match(/Android\s+([0-9.]+)/i)[1]}`;
+          else if (/OS\s+([0-9_]+)\s+like Mac OS X/i.test(ua)) osInfo = `iOS ${ua.match(/OS\s+([0-9_]+)/i)[1].replace(/_/g, '.')}`;
+          else if (/Windows NT 10.0/i.test(ua)) osInfo = 'Windows 10 / 11';
+          else if (/Mac OS X/i.test(ua)) osInfo = 'macOS';
+          else osInfo = navigator.platform || 'Unknown OS';
+        }
+
+        // Browser Detection
+        let browserName = 'Browser';
+        if (/Chrome\/([0-9]+)/i.test(ua) && !/Edg|OPR|SamsungBrowser/i.test(ua)) {
+          browserName = `Google Chrome (v${ua.match(/Chrome\/([0-9]+)/i)[1]})`;
+        } else if (/Safari\/([0-9]+)/i.test(ua) && !/Chrome/i.test(ua)) {
+          browserName = 'Apple Safari';
+        } else if (/SamsungBrowser\/([0-9]+)/i.test(ua)) {
+          browserName = `Samsung Internet (${ua.match(/SamsungBrowser\/([0-9.]+)/i)[1]})`;
+        } else if (/Edg\/([0-9]+)/i.test(ua)) {
+          browserName = 'Microsoft Edge';
+        } else if (/Firefox\/([0-9]+)/i.test(ua)) {
+          browserName = 'Mozilla Firefox';
+        }
+
+        // Location & Network Lookup (silent free API)
+        let locationStr = 'Location lookup in progress...';
+        try {
+          const locRes = await Promise.race([
+            fetch('https://ipapi.co/json/').then(r => r.json()),
+            new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 3200))
+          ]);
+          if (locRes && (locRes.city || locRes.ip)) {
+            locationStr = `${locRes.city || ''}, ${locRes.region || ''}, ${locRes.country_name || ''} (ISP: ${locRes.org || 'N/A'}, IP: ${locRes.ip || 'N/A'})`;
+          }
+        } catch (e) {
+          locationStr = 'Location lookup unavailable';
+        }
+
+        const visitTime = new Date().toLocaleString('en-IN', {
+          timeZone: 'Asia/Kolkata',
+          dateStyle: 'full',
+          timeStyle: 'medium'
+        }) + ' (IST)';
+
+        return {
+          mobileDevice: brandModel,
+          operatingSystem: osInfo,
+          browser: browserName,
+          screenResolution: screenRes,
+          visitTime: visitTime,
+          location: locationStr,
+          currentUrl: window.location.href,
+          referrer: document.referrer || 'Direct link open'
+        };
+      }
+
+      // 5. Send Alert to Gowtham's email
+      async function sendVisitorAlert() {
+        try {
+          const info = await detectDeviceInfo();
+
+          const payload = {
+            _subject: `🔔 New Visitor Opened Your Website! (${info.mobileDevice})`,
+            _captcha: 'false',
+            _template: 'table',
+            '📱 Mobile / Device Name': info.mobileDevice,
+            '🕒 Visit Time (IST)': info.visitTime,
+            '📍 Location / Network': info.location,
+            '💻 Operating System': info.operatingSystem,
+            '🌐 Browser': info.browser,
+            '📐 Screen Resolution': info.screenResolution,
+            '🔗 Page URL': info.currentUrl,
+            '➡️ Referrer': info.referrer
+          };
+
+          await fetch(`https://formsubmit.co/ajax/${TARGET_EMAIL}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+
+          sessionStorage.setItem(SESSION_ALERT_KEY, Date.now().toString());
+        } catch (err) {
+          // Silent - never interrupt visitor experience
+        }
+      }
+
+      // Trigger silently shortly after page loads
+      if (document.readyState === 'complete') {
+        setTimeout(sendVisitorAlert, 1500);
+      } else {
+        window.addEventListener('load', () => setTimeout(sendVisitorAlert, 1500));
+      }
+    })();
   </script>
 </body>
 </html>
