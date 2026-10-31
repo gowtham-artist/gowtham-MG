@@ -1146,20 +1146,29 @@
       box-shadow: 0 6px 22px rgba(255, 86, 154, 0.55);
     }
 
-    /* Full-screen Memory Album Modal */
-    .memory-album-modal {
+    /* =========================================
+       MEMORY FOLDER MODAL & GALLERY GRID
+       ("line ah vai" - Organized Photos Grid)
+       ========================================= */
+    .memory-folder-modal,
+    .photo-lightbox-modal {
       position: fixed;
       inset: 0;
       z-index: 100;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 16px;
+      padding: clamp(10px, 3vw, 20px);
       animation: modalFadeIn 0.28s ease-out forwards;
     }
 
-    .memory-album-modal[hidden] {
-      display: none;
+    .photo-lightbox-modal {
+      z-index: 120;
+    }
+
+    .memory-folder-modal[hidden],
+    .photo-lightbox-modal[hidden] {
+      display: none !important;
     }
 
     @keyframes modalFadeIn {
@@ -1175,28 +1184,290 @@
       -webkit-backdrop-filter: blur(18px);
     }
 
-    .album-content-wrap {
+    /* Folder Window */
+    .folder-modal-window {
       position: relative;
       z-index: 2;
-      width: min(600px, 96vw);
-      max-height: 94vh;
+      width: min(840px, 96vw);
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(165deg, rgba(38, 14, 30, 0.96), rgba(18, 6, 16, 0.98));
+      border: 1px solid rgba(255, 190, 220, 0.3);
+      border-radius: 26px;
+      box-shadow: 0 25px 65px rgba(0, 0, 0, 0.75), 0 0 35px rgba(255, 110, 180, 0.22);
+      overflow: hidden;
+      animation: folderPopIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.15) forwards;
+    }
+
+    @keyframes folderPopIn {
+      from { transform: scale(0.92) translateY(12px); opacity: 0; }
+      to { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    .folder-modal-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
+      gap: 12px;
+    }
+
+    .folder-modal-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .folder-modal-title {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+      font-weight: 600;
+      color: #fff2f8;
+      text-shadow: 0 0 12px rgba(255, 150, 200, 0.5);
+    }
+
+    .folder-modal-subtitle {
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(0.85rem, 2vw, 0.98rem);
+      color: rgba(255, 220, 238, 0.82);
+      letter-spacing: 0.02em;
+    }
+
+    .album-close-btn {
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      touch-action: manipulation;
+      flex-shrink: 0;
+    }
+
+    .album-close-btn:hover {
+      background: rgba(255, 90, 150, 0.55);
+      transform: scale(1.08);
+    }
+
+    /* Photos Grid ("line ah vai") */
+    .memory-gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 12px;
+      padding: 18px 20px;
+      overflow-y: auto;
+      max-height: calc(90vh - 130px);
+      overscroll-behavior: contain;
+      scroll-behavior: smooth;
+    }
+
+    .memory-gallery-grid::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .memory-gallery-grid::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 999px;
+    }
+
+    .memory-gallery-grid::-webkit-scrollbar-thumb {
+      background: rgba(255, 130, 185, 0.4);
+      border-radius: 999px;
+    }
+
+    @media (max-width: 520px) {
+      .memory-gallery-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        padding: 12px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .memory-gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* Photo Card */
+    .memory-grid-card {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      border-radius: 14px;
+      overflow: hidden;
+      background: rgba(24, 8, 20, 0.7);
+      border: 1px solid rgba(255, 190, 220, 0.22);
+      cursor: pointer;
+      transition: transform 0.24s cubic-bezier(0.18, 0.89, 0.32, 1.15), box-shadow 0.24s ease, border-color 0.24s ease;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    .memory-grid-card:hover {
+      transform: translateY(-4px) scale(1.04);
+      box-shadow: 0 10px 24px rgba(255, 95, 165, 0.38), 0 0 14px rgba(255, 140, 195, 0.25);
+      border-color: rgba(255, 170, 215, 0.7);
+      z-index: 3;
+    }
+
+    .memory-grid-card:active {
+      transform: scale(0.96);
+    }
+
+    .grid-card-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.35s ease;
+    }
+
+    .memory-grid-card:hover .grid-card-thumb {
+      transform: scale(1.1);
+    }
+
+    .grid-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.5) 0%, transparent 45%);
+      pointer-events: none;
+    }
+
+    .grid-card-idx {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      background: rgba(18, 6, 16, 0.78);
+      color: #ffd8ec;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 999px;
+      padding: 1px 7px;
+      font-family: "Playfair Display", serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      backdrop-filter: blur(4px);
+      z-index: 2;
+    }
+
+    .memory-grid-card.is-special-card {
+      border: 2px solid rgba(246, 213, 138, 0.95);
+      box-shadow: 0 0 18px rgba(246, 213, 138, 0.6), inset 0 0 10px rgba(255, 110, 180, 0.4);
+      animation: specialCardPulse 2.8s infinite ease-in-out;
+    }
+
+    @keyframes specialCardPulse {
+      0%, 100% {
+        box-shadow: 0 0 14px rgba(246, 213, 138, 0.5), inset 0 0 8px rgba(255, 110, 180, 0.3);
+      }
+      50% {
+        box-shadow: 0 0 24px rgba(246, 213, 138, 0.85), 0 0 35px rgba(255, 110, 180, 0.55), inset 0 0 14px rgba(255, 255, 255, 0.6);
+      }
+    }
+
+    .grid-card-special-badge {
+      position: absolute;
+      bottom: 5px;
+      left: 5px;
+      right: 5px;
+      background: linear-gradient(135deg, rgba(255, 90, 160, 0.95), rgba(212, 175, 55, 0.95));
+      color: #fff;
+      border-radius: 999px;
+      padding: 2px 4px;
+      font-family: "Playfair Display", serif;
+      font-size: 0.64rem;
+      font-weight: 600;
+      text-align: center;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+      z-index: 2;
+      pointer-events: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .folder-modal-footer {
+      padding: 10px 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.02);
+      text-align: center;
+    }
+
+    .folder-hint {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 0.95rem;
+      color: rgba(255, 220, 238, 0.85);
+      letter-spacing: 0.03em;
+    }
+
+    /* =========================================
+       PHOTO LIGHTBOX MODAL ("entha photo pakanumo")
+       ========================================= */
+    .lightbox-content-wrap {
+      position: relative;
+      z-index: 2;
+      width: min(720px, 98vw);
+      max-height: 96vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
-      background: linear-gradient(160deg, rgba(255, 200, 225, 0.1), rgba(28, 10, 22, 0.85));
-      border: 1px solid rgba(255, 200, 225, 0.25);
+      gap: 10px;
+      background: linear-gradient(165deg, rgba(32, 12, 26, 0.96), rgba(14, 5, 12, 0.98));
+      border: 1px solid rgba(255, 190, 220, 0.3);
       border-radius: 26px;
-      padding: 18px 16px 14px;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.65), 0 0 35px rgba(255, 110, 180, 0.2);
+      padding: 14px 16px 12px;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.75), 0 0 35px rgba(255, 110, 180, 0.22);
+      overflow: hidden;
+      animation: folderPopIn 0.25s ease-out forwards;
     }
 
-    .album-topbar {
+    .lightbox-topbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       width: 100%;
-      padding: 0 6px;
+      padding: 0 4px;
+      gap: 8px;
+    }
+
+    .lightbox-back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 999px;
+      padding: 7px 15px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffe6f3;
+      font-family: "Playfair Display", serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      touch-action: manipulation;
+    }
+
+    .lightbox-back-btn:hover {
+      background: rgba(255, 100, 160, 0.4);
+      border-color: rgba(255, 160, 210, 0.7);
+      transform: scale(1.04);
+    }
+
+    .lightbox-title-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      text-align: center;
     }
 
     .album-counter {
@@ -1207,31 +1478,18 @@
       letter-spacing: 0.05em;
     }
 
-    .album-title {
-      font-family: "Great Vibes", cursive;
-      font-size: 1.7rem;
-      color: #fff0f7;
-      text-shadow: 0 0 12px rgba(255, 160, 205, 0.6);
-    }
-
-    .album-close-btn {
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      width: 36px;
-      height: 36px;
-      display: grid;
-      place-items: center;
-      background: rgba(255, 255, 255, 0.12);
+    .album-special-badge {
+      background: linear-gradient(135deg, rgba(255, 90, 160, 0.92), rgba(212, 175, 55, 0.92));
       color: #fff;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.2s;
-      touch-action: manipulation;
-    }
-
-    .album-close-btn:hover {
-      background: rgba(255, 90, 150, 0.55);
-      transform: scale(1.08);
+      padding: 3px 12px;
+      border-radius: 999px;
+      font-family: "Playfair Display", serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35), 0 0 15px rgba(255, 215, 120, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      white-space: nowrap;
+      pointer-events: none;
     }
 
     .album-viewer {
@@ -1240,18 +1498,18 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 380px;
-      max-height: 64vh;
+      min-height: 280px;
+      max-height: 56vh;
+      height: 54vh;
       touch-action: pan-y pinch-zoom;
       overflow: hidden;
       border-radius: 20px;
+      background: rgba(10, 4, 10, 0.45);
     }
 
     .album-slide-container {
       width: 100%;
       height: 100%;
-      min-height: 360px;
-      max-height: 64vh;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1261,10 +1519,10 @@
 
     .album-main-image {
       max-width: 100%;
-      max-height: 62vh;
+      max-height: 100%;
       object-fit: contain;
-      border-radius: 18px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 160, 205, 0.2);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 160, 205, 0.2);
       transition: opacity 0.22s ease, transform 0.22s ease;
       will-change: transform, opacity;
     }
@@ -1287,6 +1545,11 @@
       to { transform: translateX(0); opacity: 1; }
     }
 
+    .album-main-image.is-special-photo {
+      border: 2px solid rgba(246, 213, 138, 0.9);
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45), 0 0 32px rgba(255, 130, 190, 0.65), 0 0 22px rgba(246, 213, 138, 0.55);
+    }
+
     .album-nav-btn {
       position: absolute;
       top: 50%;
@@ -1298,7 +1561,7 @@
       height: 44px;
       display: grid;
       place-items: center;
-      background: rgba(30, 14, 26, 0.72);
+      background: rgba(30, 14, 26, 0.76);
       color: #fff;
       font-size: 1.8rem;
       line-height: 1;
@@ -1314,106 +1577,91 @@
       transform: translateY(-50%) scale(1.1);
     }
 
-    .album-prev {
-      left: 8px;
+    .album-prev { left: 8px; }
+    .album-next { right: 8px; }
+
+    /* Lightbox Quick Thumb Strip */
+    .lightbox-thumb-strip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: auto;
+      padding: 6px 4px;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
     }
 
-    .album-next {
-      right: 8px;
+    .lightbox-thumb-strip::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .lightbox-thumb-strip::-webkit-scrollbar-thumb {
+      background: rgba(255, 130, 185, 0.35);
+      border-radius: 999px;
+    }
+
+    .lightbox-thumb-item {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      cursor: pointer;
+      object-fit: cover;
+      opacity: 0.6;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .lightbox-thumb-item:hover {
+      opacity: 0.95;
+      transform: scale(1.06);
+    }
+
+    .lightbox-thumb-item.active {
+      opacity: 1;
+      border: 2px solid #ff75ab;
+      box-shadow: 0 0 12px rgba(255, 117, 171, 0.85);
+      transform: scale(1.08);
+    }
+
+    .lightbox-thumb-item.is-special-thumb {
+      border-color: rgba(246, 213, 138, 0.85);
     }
 
     .album-hint {
       font-family: "Cormorant Garamond", serif;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       color: rgba(255, 220, 238, 0.8);
       text-align: center;
       letter-spacing: 0.03em;
     }
 
-    
-      .photo-bubble.is-special-bubble {
-        border: 3px solid #fce38a;
-        box-shadow: 0 0 25px rgba(255, 215, 120, 0.9), inset 0 0 15px rgba(255, 255, 255, 0.9), 0 0 40px rgba(255, 110, 180, 0.7);
-      }
-      
-      /* New final bubble styling */
-      #finalBubble {
-        position: fixed;
-        bottom: 12px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 80px;
-        height: 80px;
-        background-size: cover;
-        background-position: center;
-        display: none;
-        z-index: 20;
-        border-radius: 50%;
-        box-shadow: 0 0 20px rgba(255,120,180,0.6);
-      }
-      #finalBubble.float {
-        animation: floatBubbleUp 6s ease-out forwards;
-      }
-
+    .photo-bubble.is-special-bubble {
       border: 3px solid #fce38a;
       box-shadow: 0 0 25px rgba(255, 215, 120, 0.9), inset 0 0 15px rgba(255, 255, 255, 0.9), 0 0 40px rgba(255, 110, 180, 0.7);
     }
 
-    .album-special-badge {
-      position: absolute;
+    /* New final bubble styling */
+    #finalBubble {
+      position: fixed;
       bottom: 12px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 12;
-      background: linear-gradient(135deg, rgba(255, 90, 160, 0.92), rgba(212, 175, 55, 0.92));
-      color: #fff;
-      padding: 6px 16px;
-      border-radius: 999px;
-      font-family: "Playfair Display", serif;
-      font-size: 0.88rem;
-      letter-spacing: 0.04em;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35), 0 0 15px rgba(255, 215, 120, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      white-space: nowrap;
-      animation: specialBadgePop 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
-      pointer-events: none;
+      width: 80px;
+      height: 80px;
+      background-size: cover;
+      background-position: center;
+      display: none;
+      z-index: 20;
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(255,120,180,0.6);
     }
-
-    @keyframes specialBadgePop {
-      from { transform: translateX(-50%) scale(0.7); opacity: 0; }
-      to { transform: translateX(-50%) scale(1); opacity: 1; }
-    }
-
-    .album-main-image.is-special-photo {
-      border: 2px solid rgba(246, 213, 138, 0.9);
-      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45), 0 0 32px rgba(255, 130, 190, 0.65), 0 0 22px rgba(246, 213, 138, 0.55);
-    }
-
-    .album-complete-notice {
-      position: absolute;
-      inset: 0;
-      z-index: 25;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      background: rgba(20, 7, 16, 0.94);
-      border-radius: 20px;
-      color: #ffe6f3;
-      font-family: "Cormorant Garamond", serif;
-      font-size: 1.45rem;
-      text-align: center;
-      padding: 24px;
-      backdrop-filter: blur(12px);
-      animation: modalFadeIn 0.3s ease-out;
-    }
-
-    .album-complete-notice strong {
-      font-family: "Great Vibes", cursive;
-      font-size: 2.2rem;
-      color: #ffd8ec;
-      text-shadow: 0 0 16px rgba(255, 140, 200, 0.7);
+    #finalBubble.float {
+      animation: floatBubbleUp 6s ease-out forwards;
     }
 
     #noteOptionBox p {
@@ -2278,7 +2526,7 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
               <span class="folder-emoji-icon" aria-hidden="true">📁</span>
               <div class="folder-text-wrap">
                 <span class="folder-title">Special Memories Folder</span>
-                <span class="folder-desc">Tap to open & swipe through all 41 photos</span>
+                <span class="folder-desc">Tap to open & view all 41 photos</span>
               </div>
               <button class="folder-open-action" id="openAlbumBtn" type="button">Open 📂</button>
             </div>
@@ -2316,30 +2564,55 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
     <div class="floating-butterflies" id="floatingButterflies"></div>
   </div>
 
-  <!-- Memory Album Swipe Viewer -->
-  <div id="memoryAlbumModal" class="memory-album-modal" hidden aria-modal="true" role="dialog">
-    <div class="album-backdrop" id="albumBackdrop"></div>
-    <div class="album-content-wrap">
-      <div class="album-topbar">
-        <span class="album-counter" id="albumCounter">1 / 41</span>
-        <span class="album-title">Special Memories ✨</span>
-        <button id="closeAlbumBtn" class="album-close-btn" type="button" aria-label="Close album">✕</button>
-      </div>
-
-      <div class="album-viewer" id="albumViewer">
-        <button id="albumPrevBtn" class="album-nav-btn album-prev" type="button" aria-label="Previous photo">‹</button>
-        <div class="album-slide-container" id="albumSlideContainer">
-          <img id="albumMainImage" class="album-main-image" src="" alt="Memory photo" />
-          <div id="albumSpecialBadge" class="album-special-badge" hidden>✨ Most Special Memory ❤️</div>
-          <div id="albumCompleteNotice" class="album-complete-notice" hidden>
-            <strong>All Memories Viewed</strong>
-            <span>Closing file... Tap Open to view anytime ✨</span>
-          </div>
+  <!-- Memory Folder Gallery Modal ("line ah vai" - Organized Photos Grid) -->
+  <div id="memoryFolderModal" class="memory-folder-modal" hidden aria-modal="true" role="dialog" aria-label="Special Memories Folder">
+    <div class="album-backdrop" id="folderBackdrop"></div>
+    <div class="folder-modal-window">
+      <div class="folder-modal-topbar">
+        <div class="folder-modal-title-group">
+          <span class="folder-modal-title">📁 Special Memories ✨</span>
+          <span class="folder-modal-subtitle">All 41 Memories • Click any photo to view full size</span>
         </div>
-        <button id="albumNextBtn" class="album-nav-btn album-next" type="button" aria-label="Next photo">›</button>
+        <button id="closeFolderModalBtn" class="album-close-btn" type="button" aria-label="Close folder">✕</button>
       </div>
 
-      <div class="album-hint">Swipe left / right or tap arrows to view photos</div>
+      <div class="memory-gallery-grid" id="memoryGalleryGrid">
+        <!-- Rendered dynamically by script -->
+      </div>
+
+      <div class="folder-modal-footer">
+        <span class="folder-hint">✨ Tap any photo to open & view • All 41 photos lined up ✨</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full Photo Lightbox Modal ("entha photo pakanumo antha photo open panni pathukatum") -->
+  <div id="photoLightboxModal" class="photo-lightbox-modal" hidden aria-modal="true" role="dialog" aria-label="Photo Lightbox">
+    <div class="album-backdrop" id="lightboxBackdrop"></div>
+    <div class="lightbox-content-wrap">
+      <div class="lightbox-topbar">
+        <button id="lightboxBackToGridBtn" class="lightbox-back-btn" type="button">‹ Back to Folder</button>
+        <div class="lightbox-title-wrap">
+          <span class="album-counter" id="lightboxCounter">1 / 41</span>
+          <span id="lightboxSpecialBadge" class="album-special-badge" hidden>✨ Most Special Memory ❤️</span>
+        </div>
+        <button id="closeLightboxBtn" class="album-close-btn" type="button" aria-label="Close photo">✕</button>
+      </div>
+
+      <div class="album-viewer" id="lightboxViewer">
+        <button id="lightboxPrevBtn" class="album-nav-btn album-prev" type="button" aria-label="Previous photo">‹</button>
+        <div class="album-slide-container" id="lightboxSlideContainer">
+          <img id="lightboxMainImage" class="album-main-image" src="" alt="Memory photo" />
+        </div>
+        <button id="lightboxNextBtn" class="album-nav-btn album-next" type="button" aria-label="Next photo">›</button>
+      </div>
+
+      <!-- Quick Thumbnail Row -->
+      <div class="lightbox-thumb-strip" id="lightboxThumbStrip" aria-label="Photo thumbnails">
+        <!-- Generated dynamically -->
+      </div>
+
+      <div class="album-hint">Swipe left / right or tap arrows • Tap thumbnail to jump</div>
     </div>
   </div>
 
@@ -3187,142 +3460,215 @@ Be safe thanks for everything.. <img class="emoji-image inline-emoji" src="spark
       }
     }
 
-    // Memory Folder & Swipe Album
-    const memoryAlbumModal = document.getElementById('memoryAlbumModal');
-    const albumBackdrop = document.getElementById('albumBackdrop');
+    // Memory Folder & Photo Gallery Lightbox
+    const memoryFolderModal = document.getElementById('memoryFolderModal');
+    const folderBackdrop = document.getElementById('folderBackdrop');
+    const closeFolderModalBtn = document.getElementById('closeFolderModalBtn');
+    const memoryGalleryGrid = document.getElementById('memoryGalleryGrid');
+
+    const photoLightboxModal = document.getElementById('photoLightboxModal');
+    const lightboxBackdrop = document.getElementById('lightboxBackdrop');
+    const closeLightboxBtn = document.getElementById('closeLightboxBtn');
+    const lightboxBackToGridBtn = document.getElementById('lightboxBackToGridBtn');
+    const lightboxPrevBtn = document.getElementById('lightboxPrevBtn');
+    const lightboxNextBtn = document.getElementById('lightboxNextBtn');
+    const lightboxMainImage = document.getElementById('lightboxMainImage');
+    const lightboxCounter = document.getElementById('lightboxCounter');
+    const lightboxViewer = document.getElementById('lightboxViewer');
+    const lightboxSpecialBadge = document.getElementById('lightboxSpecialBadge');
+    const lightboxThumbStrip = document.getElementById('lightboxThumbStrip');
+
     const openAlbumBtn = document.getElementById('openAlbumBtn');
-    const closeAlbumBtn = document.getElementById('closeAlbumBtn');
-    const albumPrevBtn = document.getElementById('albumPrevBtn');
-    const albumNextBtn = document.getElementById('albumNextBtn');
-    const albumMainImage = document.getElementById('albumMainImage');
-    const albumCounter = document.getElementById('albumCounter');
-    const albumViewer = document.getElementById('albumViewer');
-    const albumSpecialBadge = document.getElementById('albumSpecialBadge');
-    const albumCompleteNotice = document.getElementById('albumCompleteNotice');
 
-    let currentAlbumIdx = 0;
-    let isClosingAlbum = false;
+    let currentPhotoIdx = 0;
+    let galleryGridInitialized = false;
 
-    function showAlbumPhoto(index, direction) {
-      if (!bubblePhotos.length || isClosingAlbum) return;
+    // Render folder gallery grid ("line ah vai" - Organized Photos Grid)
+    function initGalleryGrid() {
+      if (!memoryGalleryGrid || galleryGridInitialized) return;
+      memoryGalleryGrid.innerHTML = '';
 
-      if (index >= bubblePhotos.length) {
-        finishAndCloseAlbum();
-        return;
+      if (lightboxThumbStrip) {
+        lightboxThumbStrip.innerHTML = '';
       }
 
-      if (index < 0) {
-        index = 0;
-      }
+      bubblePhotos.forEach((photoSrc, idx) => {
+        const isSpecial = (photoSrc === specialPhoto);
 
-      currentAlbumIdx = index;
-      const photoSrc = bubblePhotos[currentAlbumIdx];
+        // 1. Photo Card inside Folder Grid
+        const card = document.createElement('div');
+        card.className = 'memory-grid-card' + (isSpecial ? ' is-special-card' : '');
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('aria-label', `View memory photo ${idx + 1}`);
+
+        card.innerHTML = `
+          <img class="grid-card-thumb" src="${encodeURI(photoSrc)}" loading="lazy" alt="Memory #${idx + 1}" />
+          <div class="grid-card-overlay"></div>
+          <span class="grid-card-idx">${idx + 1}</span>
+          ${isSpecial ? '<span class="grid-card-special-badge">✨ Special Memory ❤️</span>' : ''}
+        `;
+
+        card.addEventListener('click', () => {
+          openPhotoLightbox(idx);
+        });
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openPhotoLightbox(idx);
+          }
+        });
+        memoryGalleryGrid.appendChild(card);
+
+        // 2. Mini thumbnail inside Lightbox bottom strip
+        if (lightboxThumbStrip) {
+          const thumb = document.createElement('img');
+          thumb.className = 'lightbox-thumb-item' + (isSpecial ? ' is-special-thumb' : '');
+          thumb.src = encodeURI(photoSrc);
+          thumb.loading = 'lazy';
+          thumb.alt = `Thumb ${idx + 1}`;
+          thumb.dataset.index = idx;
+          thumb.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showLightboxPhoto(idx);
+          });
+          lightboxThumbStrip.appendChild(thumb);
+        }
+      });
+
+      galleryGridInitialized = true;
+    }
+
+    function openFolder() {
+      if (!memoryFolderModal) return;
+      initGalleryGrid();
+      memoryFolderModal.hidden = false;
+    }
+
+    function closeFolder() {
+      if (memoryFolderModal) memoryFolderModal.hidden = true;
+      closePhotoLightbox();
+    }
+
+    // Full photo view ("entha photo pakanumo antha photo open panni pathukatum")
+    function openPhotoLightbox(index) {
+      if (!photoLightboxModal) return;
+      photoLightboxModal.hidden = false;
+      showLightboxPhoto(index);
+    }
+
+    function closePhotoLightbox() {
+      if (photoLightboxModal) photoLightboxModal.hidden = true;
+    }
+
+    function showLightboxPhoto(index, direction) {
+      if (!bubblePhotos.length) return;
+
+      if (index >= bubblePhotos.length) index = 0;
+      if (index < 0) index = bubblePhotos.length - 1;
+
+      currentPhotoIdx = index;
+      const photoSrc = bubblePhotos[currentPhotoIdx];
       const isSpecial = (photoSrc === specialPhoto);
 
-      albumMainImage.classList.remove('slide-left', 'slide-right');
-      void albumMainImage.offsetWidth;
-      if (direction === 'left') {
-        albumMainImage.classList.add('slide-left');
-      } else if (direction === 'right') {
-        albumMainImage.classList.add('slide-right');
+      if (lightboxMainImage) {
+        lightboxMainImage.classList.remove('slide-left', 'slide-right');
+        void lightboxMainImage.offsetWidth;
+        if (direction === 'left') {
+          lightboxMainImage.classList.add('slide-left');
+        } else if (direction === 'right') {
+          lightboxMainImage.classList.add('slide-right');
+        }
+        lightboxMainImage.src = encodeURI(photoSrc);
+        lightboxMainImage.classList.toggle('is-special-photo', isSpecial);
       }
 
-      albumMainImage.src = encodeURI(photoSrc);
-      albumCounter.textContent = `${currentAlbumIdx + 1} / ${bubblePhotos.length}`;
-
-      if (albumSpecialBadge) {
-        albumSpecialBadge.hidden = !isSpecial;
+      if (lightboxCounter) {
+        lightboxCounter.textContent = `${currentPhotoIdx + 1} / ${bubblePhotos.length}`;
       }
-      albumMainImage.classList.toggle('is-special-photo', isSpecial);
 
-      const nextIdx = Math.min(currentAlbumIdx + 1, bubblePhotos.length - 1);
-      const prevIdx = Math.max(currentAlbumIdx - 1, 0);
+      if (lightboxSpecialBadge) {
+        lightboxSpecialBadge.hidden = !isSpecial;
+      }
+
+      // Update active thumbnail in strip
+      if (lightboxThumbStrip) {
+        const thumbs = lightboxThumbStrip.querySelectorAll('.lightbox-thumb-item');
+        thumbs.forEach((th, i) => {
+          if (i === currentPhotoIdx) {
+            th.classList.add('active');
+            th.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+          } else {
+            th.classList.remove('active');
+          }
+        });
+      }
+
+      // Preload adjacent photos for instant response
+      const nextIdx = (currentPhotoIdx + 1) % bubblePhotos.length;
+      const prevIdx = (currentPhotoIdx - 1 + bubblePhotos.length) % bubblePhotos.length;
       new Image().src = encodeURI(bubblePhotos[nextIdx]);
       new Image().src = encodeURI(bubblePhotos[prevIdx]);
     }
 
-    function finishAndCloseAlbum() {
-      if (isClosingAlbum) return;
-      isClosingAlbum = true;
-      if (albumCompleteNotice) albumCompleteNotice.hidden = false;
+    if (openAlbumBtn) openAlbumBtn.addEventListener('click', openFolder);
+    if (closeFolderModalBtn) closeFolderModalBtn.addEventListener('click', closeFolder);
+    if (folderBackdrop) folderBackdrop.addEventListener('click', closeFolder);
 
-      setTimeout(() => {
-        if (albumCompleteNotice) albumCompleteNotice.hidden = true;
-        // Loop back to first photo instead of closing
-        currentAlbumIdx = 0;
-        isClosingAlbum = false;
-        showAlbumPhoto(0, 'left');
-      }, 1200);
-    }
+    if (closeLightboxBtn) closeLightboxBtn.addEventListener('click', closePhotoLightbox);
+    if (lightboxBackdrop) lightboxBackdrop.addEventListener('click', closePhotoLightbox);
+    if (lightboxBackToGridBtn) lightboxBackToGridBtn.addEventListener('click', closePhotoLightbox);
 
-    function openAlbum() {
-      if (!memoryAlbumModal) return;
-      isClosingAlbum = false;
-      if (albumCompleteNotice) albumCompleteNotice.hidden = true;
-      memoryAlbumModal.hidden = false;
-      showAlbumPhoto(0);
-    }
-
-    function closeAlbum() {
-      if (!memoryAlbumModal) return;
-      memoryAlbumModal.hidden = true;
-    }
-
-    if (openAlbumBtn) openAlbumBtn.addEventListener('click', openAlbum);
-    if (closeAlbumBtn) closeAlbumBtn.addEventListener('click', closeAlbum);
-    if (albumBackdrop) albumBackdrop.addEventListener('click', closeAlbum);
-
-    if (albumPrevBtn) {
-      albumPrevBtn.addEventListener('click', function (e) {
+    if (lightboxPrevBtn) {
+      lightboxPrevBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        showAlbumPhoto(currentAlbumIdx - 1, 'right');
+        showLightboxPhoto(currentPhotoIdx - 1, 'right');
       });
     }
 
-    if (albumNextBtn) {
-      albumNextBtn.addEventListener('click', function (e) {
+    if (lightboxNextBtn) {
+      lightboxNextBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        showAlbumPhoto(currentAlbumIdx + 1, 'left');
+        showLightboxPhoto(currentPhotoIdx + 1, 'left');
       });
     }
 
+    // Touch swipe gesture support for mobile
     let touchStartX = 0;
     let touchStartY = 0;
-
-    if (albumViewer) {
-      albumViewer.addEventListener('touchstart', function (e) {
+    if (lightboxViewer) {
+      lightboxViewer.addEventListener('touchstart', (e) => {
         if (!e.touches.length) return;
         touchStartX = e.touches[0].clientX;
         touchStartY = e.touches[0].clientY;
       }, { passive: true });
 
-      albumViewer.addEventListener('touchend', function (e) {
+      lightboxViewer.addEventListener('touchend', (e) => {
         if (!e.changedTouches.length) return;
-        const touchEndX = e.changedTouches[0].clientX;
-        const touchEndY = e.changedTouches[0].clientY;
-        const diffX = touchEndX - touchStartX;
-        const diffY = touchEndY - touchStartY;
-
+        const diffX = e.changedTouches[0].clientX - touchStartX;
+        const diffY = e.changedTouches[0].clientY - touchStartY;
         if (Math.abs(diffX) > 35 && Math.abs(diffX) > Math.abs(diffY)) {
           if (diffX < 0) {
-            showAlbumPhoto(currentAlbumIdx + 1, 'left');
+            showLightboxPhoto(currentPhotoIdx + 1, 'left');
           } else {
-            showAlbumPhoto(currentAlbumIdx - 1, 'right');
+            showLightboxPhoto(currentPhotoIdx - 1, 'right');
           }
         }
       }, { passive: true });
     }
 
-    window.addEventListener('keydown', function (e) {
-      if (memoryAlbumModal && !memoryAlbumModal.hidden) {
-        if (e.key === 'ArrowRight') showAlbumPhoto(currentAlbumIdx + 1, 'left');
-        else if (e.key === 'ArrowLeft') showAlbumPhoto(currentAlbumIdx - 1, 'right');
-        else if (e.key === 'Escape') closeAlbum();
+    window.addEventListener('keydown', (e) => {
+      if (photoLightboxModal && !photoLightboxModal.hidden) {
+        if (e.key === 'ArrowRight') showLightboxPhoto(currentPhotoIdx + 1, 'left');
+        else if (e.key === 'ArrowLeft') showLightboxPhoto(currentPhotoIdx - 1, 'right');
+        else if (e.key === 'Escape') closePhotoLightbox();
+      } else if (memoryFolderModal && !memoryFolderModal.hidden) {
+        if (e.key === 'Escape') closeFolder();
       }
     });
 
     letterBack.addEventListener('click', function () {
-      closeAlbum();
+      closeFolder();
       stopBubbles();
       letterContent.classList.remove('visible');
       showScreen(finalScreen, 'locker');
